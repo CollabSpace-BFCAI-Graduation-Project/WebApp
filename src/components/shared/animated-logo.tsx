@@ -1,0 +1,24 @@
+export const AnimatedLogo = () => {
+  return (
+    <div className="inline-flex items-center justify-center w-14 h-14 bg-black rounded-2xl border-4 border-black shadow-[4px_4px_0px_0px_rgba(236,72,153,1)] mb-3 transition-transform duration-300 hover:rotate-12">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="28"
+        height="28"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="lucide lucide-sparkles text-yellow-300"
+        aria-hidden="true"
+      >
+        <path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path>
+        <path d="M20 2v4"></path>
+        <path d="M22 4h-4"></path>
+        <circle cx="4" cy="20" r="2"></circle>
+      </svg>
+    </div>
+  );
+};

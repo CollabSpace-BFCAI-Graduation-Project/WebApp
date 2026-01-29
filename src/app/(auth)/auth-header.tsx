@@ -1,0 +1,10 @@
+import { AnimatedLogo } from "@/components/shared/animated-logo";
+
+export const AuthHeader = () => {
+  return (
+    <div className="flex flex-col items-center">
+      <AnimatedLogo />
+      <h1 className="font-extrabold text-2xl">CollabSpace</h1>
+    </div>
+  );
+};
