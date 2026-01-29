@@ -11,6 +11,7 @@ import { FieldGroup } from "@/components/ui/field";
 import { FormController } from "@/components/shared/form-controller";
 import Link from "next/link";
 import { PasswordInput } from "@/components/shared/password-input";
+import { GoogleIcon } from "@/components/shared/google-icon";
 
 interface RegisterFormProps {
   form: UseFormReturn<RegisterFormData>;
@@ -84,9 +85,8 @@ export function RegisterForm({ form }: RegisterFormProps) {
             Create account
             <ArrowRight className="ml-1" />
           </Button>
-          <Button type="button" variant="outline" onClick={() => {}}>
-            {/* <GoogleIcon className="mr-2" /> */}
-            Google
+          <Button type="button" variant="outline" onClick={() => { }} title="Login with Google">
+            <GoogleIcon />
           </Button>
         </div>
         <p className="text-sm text-muted-foreground space-x-1 mt-2">

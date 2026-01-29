@@ -21,7 +21,7 @@ export function AuthFormTabs({ mode }: AuthFormTabsProps) {
           Register
         </TabsTrigger>
         <TabsTrigger
-          className="data-[state=active]:bg-secondary data-[state=active]:text-secondary-foreground h-8"
+          className="data-[state=active]:bg-secondary data-[state=active]:text-secondary-foreground h-8 transition-colors duration-300"
           value="login"
         >
           Login

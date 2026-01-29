@@ -12,18 +12,21 @@ import { FormController } from "@/components/shared/form-controller";
 import Link from "next/link";
 import { SeparatorWithText } from "@/components/shared/separator-with-text";
 import { PasswordInput } from "@/components/shared/password-input";
+import { useResetAuthForms } from "@/providers/auth-forms-provider";
+import { GoogleIcon } from "@/components/shared/google-icon";
 
 interface LoginFormProps {
   form: UseFormReturn<LoginFormData>;
 }
 
 export function LoginForm({ form }: LoginFormProps) {
+  const resetAuthForms = useResetAuthForms();
   const login = async (data: LoginFormData) => {
     return new Promise<void>((resolve) => {
       setTimeout(() => {
         resolve();
         console.log(data);
-        form.reset();
+        resetAuthForms();
       }, 2000);
     });
   };
@@ -68,7 +71,7 @@ export function LoginForm({ form }: LoginFormProps) {
           className="w-full"
           onClick={() => {}}
         >
-          Google
+          <GoogleIcon />
           <span>Continue with Google</span>
         </Button>
         {/* Auth form switcher */}

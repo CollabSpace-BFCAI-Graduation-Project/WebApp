@@ -13,9 +13,11 @@ import { createContext, useContext } from "react";
 const AuthContext = createContext<{
   registerForm: UseFormReturn<RegisterFormData>;
   loginForm: UseFormReturn<LoginFormData>;
+  resetAuthForms: () => void;
 }>({
   registerForm: {} as UseFormReturn<RegisterFormData>,
   loginForm: {} as UseFormReturn<LoginFormData>,
+  resetAuthForms: () => {},
 });
 
 export const AuthFormsProvider = ({
@@ -43,8 +45,13 @@ export const AuthFormsProvider = ({
     },
   });
 
+  const resetAuthForms = () => {
+    loginForm.reset();
+    registerForm.reset();
+  };
+
   return (
-    <AuthContext.Provider value={{ registerForm, loginForm }}>
+    <AuthContext.Provider value={{ registerForm, loginForm, resetAuthForms }}>
       {children}
     </AuthContext.Provider>
   );
@@ -56,4 +63,9 @@ export function useAuthForms() {
     throw new Error("useAuthForms must be used within an AuthFormsProvider");
   }
   return context;
+}
+
+export function useResetAuthForms() {
+  const { resetAuthForms } = useAuthForms();
+  return resetAuthForms;
 }
