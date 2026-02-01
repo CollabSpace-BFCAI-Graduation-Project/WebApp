@@ -14,6 +14,8 @@ import { SeparatorWithText } from "@/components/shared/separator-with-text";
 import { PasswordInput } from "@/components/shared/password-input";
 import { useResetAuthForms } from "@/providers/auth-forms-provider";
 import { GoogleIcon } from "@/components/shared/google-icon";
+import { useFormState } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
 interface LoginFormProps {
   form: UseFormReturn<LoginFormData>;
@@ -21,23 +23,24 @@ interface LoginFormProps {
 
 export function LoginForm({ form }: LoginFormProps) {
   const resetAuthForms = useResetAuthForms();
+  const { isSubmitting } = useFormState({ control: form.control });
+  const router = useRouter();
+
   const login = async (data: LoginFormData) => {
     return new Promise<void>((resolve) => {
       setTimeout(() => {
         resolve();
         console.log(data);
-        resetAuthForms();
       }, 2000);
     });
   };
 
   async function onSubmit(data: LoginFormData) {
     console.log("Login form submitted:", data);
-    toast.promise(login(data), {
-      loading: "Logging in...",
-      success: "Logged in successfully!",
-      error: "Failed to log in. Please try again.",
-    });
+    await login(data);
+    toast.success("Logged in successfully!");
+    resetAuthForms();
+    router.replace("/");
   }
 
   return (
@@ -59,16 +62,21 @@ export function LoginForm({ form }: LoginFormProps) {
       </CardContent>
       <CardFooter className="flex flex-col">
         {/* login button */}
-        <Button type="submit" form="login" className="w-full">
-          Log in
-          <ArrowRight className="ml-1" />
+        <Button
+          type="submit"
+          form="login"
+          className="w-full cursor-pointer"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Logging in..." : "Log in"}
+          {!isSubmitting && <ArrowRight className="ml-1" />}
         </Button>
         <SeparatorWithText>or</SeparatorWithText>
         {/* sign in with google */}
         <Button
           type="button"
           variant="outline"
-          className="w-full"
+          className="w-full cursor-pointer"
           onClick={() => {}}
         >
           <GoogleIcon />
@@ -76,13 +84,8 @@ export function LoginForm({ form }: LoginFormProps) {
         </Button>
         {/* Auth form switcher */}
         <p className="text-sm text-muted-foreground space-x-1 mt-2">
-          <span className="text-muted-foreground">
-            Don&apos;t have an account?
-          </span>
-          <Link
-            href="/register"
-            className="text-primary font-medium hover:underline"
-          >
+          <span>Don&apos;t have an account?</span>
+          <Link href="/register" className="font-semibold hover:underline">
             Sign up
           </Link>
         </p>

@@ -1,6 +1,6 @@
 "use client";
 
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, useFormState } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -12,29 +12,33 @@ import { FormController } from "@/components/shared/form-controller";
 import Link from "next/link";
 import { PasswordInput } from "@/components/shared/password-input";
 import { GoogleIcon } from "@/components/shared/google-icon";
+import { useResetAuthForms } from "@/providers/auth-forms-provider";
+import { useRouter } from "next/navigation";
 
 interface RegisterFormProps {
   form: UseFormReturn<RegisterFormData>;
 }
 
 export function RegisterForm({ form }: RegisterFormProps) {
+  const resetAuthForms = useResetAuthForms();
+  const { isSubmitting } = useFormState({ control: form.control });
+  const router = useRouter();
+
   const createAccount = async (data: RegisterFormData) => {
     return new Promise<void>((resolve) => {
       setTimeout(() => {
         resolve();
         console.log(data);
-        form.reset();
       }, 2000);
     });
   };
 
   async function onSubmit(data: RegisterFormData) {
     console.log("Register form submitted:", data);
-    toast.promise(createAccount(data), {
-      loading: "Creating your account...",
-      success: "Account created successfully!",
-      error: "Failed to create account. Please try again.",
-    });
+    await createAccount(data);
+    toast.success("Account created successfully!");
+    resetAuthForms();
+    router.replace("/");
   }
 
   return (
@@ -84,28 +88,25 @@ export function RegisterForm({ form }: RegisterFormProps) {
           <Button
             type="submit"
             form="register"
-            className="flex-1 bg-black text-white hover:bg-black/85 cursor-pointer"
+            className="flex-1 cursor-pointer"
+            disabled={isSubmitting}
           >
-            Create account
-            <ArrowRight className="ml-1" />
+            {isSubmitting ? "Creating..." : "Create account"}
+            {!isSubmitting && <ArrowRight className="ml-1" />}
           </Button>
           <Button
             type="button"
             variant="outline"
             onClick={() => {}}
             title="Login with Google"
+            className="cursor-pointer"
           >
             <GoogleIcon />
           </Button>
         </div>
         <p className="text-sm text-muted-foreground space-x-1 mt-2">
-          <span className="text-muted-foreground">
-            Already have an account?
-          </span>
-          <Link
-            href="/login"
-            className="text-primary font-medium hover:underline"
-          >
+          <span>Already have an account?</span>
+          <Link href="/login" className="font-semibold hover:underline">
             Login
           </Link>
         </p>
