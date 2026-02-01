@@ -1,4 +1,4 @@
-import { AuthFormsProvider } from "@/providers/auth-forms-provider";
+import { AuthFormsProvider } from "@/providers/auth-forms.provider";
 import { AuthHeader } from "./auth-header";
 
 interface AuthLayoutProps {

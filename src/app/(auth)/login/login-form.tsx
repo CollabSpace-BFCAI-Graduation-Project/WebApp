@@ -12,7 +12,7 @@ import { FormController } from "@/components/shared/form-controller";
 import Link from "next/link";
 import { SeparatorWithText } from "@/components/shared/separator-with-text";
 import { PasswordInput } from "@/components/shared/password-input";
-import { useResetAuthForms } from "@/providers/auth-forms-provider";
+import { useResetAuthForms } from "@/hooks/auth-forms.hooks";
 import { GoogleIcon } from "@/components/shared/google-icon";
 import { useFormState } from "react-hook-form";
 import { useRouter } from "next/navigation";

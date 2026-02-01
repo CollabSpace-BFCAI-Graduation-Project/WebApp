@@ -1,5 +1,5 @@
 "use client";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   LoginFormData,
@@ -7,18 +7,7 @@ import {
   RegisterFormData,
   registerFormSchema,
 } from "@/schemas/auth-forms";
-
-import { createContext, useContext } from "react";
-
-const AuthContext = createContext<{
-  registerForm: UseFormReturn<RegisterFormData>;
-  loginForm: UseFormReturn<LoginFormData>;
-  resetAuthForms: () => void;
-}>({
-  registerForm: {} as UseFormReturn<RegisterFormData>,
-  loginForm: {} as UseFormReturn<LoginFormData>,
-  resetAuthForms: () => {},
-});
+import { AuthFormsContext } from "@/contexts/auth-forms.context";
 
 export const AuthFormsProvider = ({
   children,
@@ -51,21 +40,10 @@ export const AuthFormsProvider = ({
   };
 
   return (
-    <AuthContext.Provider value={{ registerForm, loginForm, resetAuthForms }}>
+    <AuthFormsContext.Provider
+      value={{ registerForm, loginForm, resetAuthForms }}
+    >
       {children}
-    </AuthContext.Provider>
+    </AuthFormsContext.Provider>
   );
 };
-
-export function useAuthForms() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuthForms must be used within an AuthFormsProvider");
-  }
-  return context;
-}
-
-export function useResetAuthForms() {
-  const { resetAuthForms } = useAuthForms();
-  return resetAuthForms;
-}

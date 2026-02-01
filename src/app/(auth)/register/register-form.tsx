@@ -12,7 +12,7 @@ import { FormController } from "@/components/shared/form-controller";
 import Link from "next/link";
 import { PasswordInput } from "@/components/shared/password-input";
 import { GoogleIcon } from "@/components/shared/google-icon";
-import { useResetAuthForms } from "@/providers/auth-forms-provider";
+import { useResetAuthForms } from "@/hooks/auth-forms.hooks";
 import { useRouter } from "next/navigation";
 
 interface RegisterFormProps {
