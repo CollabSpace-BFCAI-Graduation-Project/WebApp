@@ -30,7 +30,7 @@ export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider defaultTheme="light" disableTransitionOnChange={false}>
+        <ThemeProvider>
           <main>{children}</main>
           <Toaster />
         </ThemeProvider>

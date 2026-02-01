@@ -81,11 +81,20 @@ export function RegisterForm({ form }: RegisterFormProps) {
       </CardContent>
       <CardFooter className="flex flex-col">
         <div className="flex w-full justify-between gap-4">
-          <Button type="submit" form="register" className="flex-1">
+          <Button
+            type="submit"
+            form="register"
+            className="flex-1 bg-black text-white hover:bg-black/85 cursor-pointer"
+          >
             Create account
             <ArrowRight className="ml-1" />
           </Button>
-          <Button type="button" variant="outline" onClick={() => { }} title="Login with Google">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {}}
+            title="Login with Google"
+          >
             <GoogleIcon />
           </Button>
         </div>
