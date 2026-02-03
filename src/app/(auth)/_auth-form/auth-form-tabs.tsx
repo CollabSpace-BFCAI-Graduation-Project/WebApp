@@ -14,20 +14,8 @@ export function AuthFormTabs({ mode }: AuthFormTabsProps) {
   return (
     <Tabs value={mode} onValueChange={(value) => router.push(`/${value}`)}>
       <TabsList className="w-full">
-        <TabsTrigger
-          className="h-8 cursor-pointer data-[state=active]:bg-secondary!
-           data-[state=active]:text-secondary-foreground!"
-          value="register"
-        >
-          Register
-        </TabsTrigger>
-        <TabsTrigger
-          className="h-8 cursor-pointer data-[state=active]:bg-secondary!
-           data-[state=active]:text-secondary-foreground!"
-          value="login"
-        >
-          Login
-        </TabsTrigger>
+        <TabsTrigger value="register">Register</TabsTrigger>
+        <TabsTrigger value="login">Login</TabsTrigger>
       </TabsList>
     </Tabs>
   );
