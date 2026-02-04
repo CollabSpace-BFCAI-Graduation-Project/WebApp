@@ -680,3 +680,12 @@
 ::placeholder {
   @apply text-muted-foreground/60;
 }
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
