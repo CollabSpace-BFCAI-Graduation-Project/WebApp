@@ -1,21 +1,49 @@
-"use client"
+"use client";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 
 export default function HomePage() {
   const { setTheme } = useTheme();
+  const { setThemeColor } = useThemeColor();
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center h-screen gap-40">
       <div className="flex flex-row items-center justify-center gap-4">
-        <button className="bg-yellow-500 text-white" onClick={() => setTheme("yellow")}>yellow</button>
-        <button className="bg-green-500 text-white" onClick={() => setTheme("green")}>green</button>
-        <button className="bg-blue-500 text-white" onClick={() => setTheme("blue")}>blue</button>
-        <button className="bg-purple-500 text-white" onClick={() => setTheme("purple")}>purple</button>
-        <button className="bg-pink-500 text-white" onClick={() => setTheme("pink")}>pink</button>
+        <Link href="/register">
+          <Button variant="outline">Register</Button>
+        </Link>
+        <Link href="/login">
+          <Button variant="outline">Login</Button>
+        </Link>
       </div>
       <div className="flex flex-row items-center justify-center gap-4">
-        <Link className="font-semibold hover:underline" href="/register">register</Link>
-        <Link className="font-semibold hover:underline" href="/login">login</Link>
+        <Button variant="outline" onClick={() => setTheme("system")}>
+          System
+        </Button>
+        <Button variant="outline" onClick={() => setTheme("dark")}>
+          Dark
+        </Button>
+        <Button variant="outline" onClick={() => setTheme("light")}>
+          Light
+        </Button>
+      </div>
+      <div className="flex flex-row items-center justify-center gap-4">
+        <Button variant="outline" onClick={() => setThemeColor("default")}>
+          Default
+        </Button>
+        <Button variant="outline" onClick={() => setThemeColor("claude")}>
+          Claude
+        </Button>
+        <Button variant="outline" onClick={() => setThemeColor("clymorphism")}>
+          Clymorphism
+        </Button>
+        <Button variant="outline" onClick={() => setThemeColor("amethyst")}>
+          Amethyst
+        </Button>
+        <Button variant="outline" onClick={() => setThemeColor("ocean")}>
+          ocean
+        </Button>
       </div>
     </div>
   );

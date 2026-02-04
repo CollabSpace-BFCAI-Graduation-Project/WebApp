@@ -7,7 +7,7 @@ import {
   RegisterFormData,
   registerFormSchema,
 } from "@/schemas/auth-forms";
-import { AuthFormsContext } from "@/contexts/auth-forms.context";
+import { AuthFormsContext } from "@/contexts/authFormsContext";
 
 export const AuthFormsProvider = ({
   children,

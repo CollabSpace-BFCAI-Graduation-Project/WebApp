@@ -8,12 +8,12 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { LoginFormData } from "@/schemas/auth-forms";
 import { ArrowRight } from "lucide-react";
 import { FieldGroup } from "@/components/ui/field";
-import { FormController } from "@/components/shared/form-controller";
+import { FormController } from "@/components/shared/FormController";
 import Link from "next/link";
-import { SeparatorWithText } from "@/components/shared/separator-with-text";
-import { PasswordInput } from "@/components/shared/password-input";
-import { useResetAuthForms } from "@/hooks/auth-forms.hooks";
-import { GoogleIcon } from "@/components/shared/google-icon";
+import { SeparatorWithText } from "@/components/shared/separatorWithText";
+import { PasswordInput } from "@/components/shared/PasswordInput";
+import { useResetAuthForms } from "@/hooks/auth-forms";
+import { GoogleIcon } from "@/components/shared/GoogleIcon";
 import { useFormState } from "react-hook-form";
 import { useRouter } from "next/navigation";
 

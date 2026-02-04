@@ -1,4 +1,4 @@
-import { AuthFormsContext } from "@/contexts/auth-forms.context";
+import { AuthFormsContext } from "@/contexts/authFormsContext";
 import { useContext } from "react";
 
 export function useAuthForms() {

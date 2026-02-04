@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/providers/theme-provider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeColorProvider } from "@/components/providers/ThemeColorProvider";
+import { cookies } from "next/headers";
+import { ThemeColor } from "@/lib/types";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,14 +27,20 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
+export default async function RootLayout({
+  children,
+}: Readonly<RootLayoutProps>) {
+  const cookieStore = await cookies();
+  const themeColor = cookieStore.get("themeColor")?.value || "default";
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" data-theme={themeColor} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
-          <main>{children}</main>
+          <ThemeColorProvider initialThemeColor={themeColor as ThemeColor}>
+            <main>{children}</main>
+          </ThemeColorProvider>
           <Toaster />
         </ThemeProvider>
       </body>

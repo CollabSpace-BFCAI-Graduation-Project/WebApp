@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FormController } from "./form-controller";
+import { FormController } from "./FormController";
 import { FieldValues, Path, UseFormReturn } from "react-hook-form";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 

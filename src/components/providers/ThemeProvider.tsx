@@ -8,9 +8,9 @@ export function ThemeProvider({
 }: React.ComponentProps<typeof NextThemesProvider>) {
   return (
     <NextThemesProvider
-      attribute="data-theme"
-      defaultTheme="yellow"
-      themes={["yellow", "blue", "green", "purple", "pink"]}
+      attribute="class"
+      enableSystem
+      defaultTheme="system"
       disableTransitionOnChange
       {...props}
     >

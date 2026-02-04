@@ -1,4 +1,4 @@
-import { AnimatedLogo } from "@/components/shared/animated-logo";
+import { AnimatedLogo } from "@/components/shared/AnimatedLogo";
 
 export const AuthHeader = () => {
   return (

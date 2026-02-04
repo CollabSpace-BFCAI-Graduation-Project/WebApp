@@ -3,7 +3,7 @@ import { AuthMode } from "@/lib/types";
 import { AuthFormTabs } from "./auth-form-tabs";
 import { RegisterForm } from "../register/register-form";
 import { LoginForm } from "../login/login-form";
-import { useAuthForms } from "@/hooks/auth-forms.hooks";
+import { useAuthForms } from "@/hooks/auth-forms";
 
 interface AuthFormProps {
   mode: AuthMode;
