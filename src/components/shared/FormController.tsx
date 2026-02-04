@@ -12,7 +12,7 @@ interface FormControllerProps<T extends FieldValues> {
   name: Path<T>;
   label: string;
   placeholder: string;
-  autoComplete?: HTMLInputAutoCompleteAttribute;
+  autoComplete: HTMLInputAutoCompleteAttribute;
   type?: HTMLInputTypeAttribute;
   icon?: React.ReactNode;
   onIconClick?: () => void;
@@ -23,7 +23,7 @@ export const FormController = <T extends FieldValues>({
   label,
   name,
   placeholder,
-  autoComplete = "off",
+  autoComplete,
   type = "text",
   icon,
   onIconClick,

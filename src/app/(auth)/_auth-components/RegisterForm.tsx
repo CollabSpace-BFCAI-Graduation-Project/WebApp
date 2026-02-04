@@ -1,6 +1,6 @@
 "use client";
 
-import { UseFormReturn, useFormState } from "react-hook-form";
+import { useFormState } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -12,15 +12,11 @@ import { FormController } from "@/components/shared/FormController";
 import Link from "next/link";
 import { PasswordInput } from "@/components/shared/PasswordInput";
 import { GoogleIcon } from "@/components/shared/GoogleIcon";
-import { useResetAuthForms } from "@/hooks/auth-forms";
 import { useRouter } from "next/navigation";
+import { useAuthForms } from "@/hooks/useAuthForms";
 
-interface RegisterFormProps {
-  form: UseFormReturn<RegisterFormData>;
-}
-
-export function RegisterForm({ form }: RegisterFormProps) {
-  const resetAuthForms = useResetAuthForms();
+export function RegisterForm() {
+  const { registerForm: form, resetAuthForms } = useAuthForms();
   const { isSubmitting } = useFormState({ control: form.control });
   const router = useRouter();
 
@@ -73,11 +69,17 @@ export function RegisterForm({ form }: RegisterFormProps) {
               type="email"
             />
             <div className="flex gap-3">
-              <PasswordInput form={form} name="password" label="Password" />
+              <PasswordInput
+                form={form}
+                name="password"
+                label="Password"
+                autoComplete="new-password"
+              />
               <PasswordInput
                 form={form}
                 name="confirmPassword"
                 label="Confirm Password"
+                autoComplete="off"
               />
             </div>
           </FieldGroup>

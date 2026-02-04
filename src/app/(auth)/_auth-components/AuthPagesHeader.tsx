@@ -1,6 +1,6 @@
 import { AnimatedLogo } from "@/components/shared/AnimatedLogo";
 
-export const AuthHeader = () => {
+export const AuthPagesHeader = () => {
   return (
     <div className="flex flex-col items-center">
       <AnimatedLogo />

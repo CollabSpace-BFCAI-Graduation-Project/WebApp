@@ -16,7 +16,7 @@ export const AuthFormsProvider = ({
 }) => {
   const loginForm = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
-    mode: "onChange",
+    mode: "onBlur",
     defaultValues: {
       email: "",
       password: "",
@@ -24,7 +24,7 @@ export const AuthFormsProvider = ({
   });
   const registerForm = useForm<RegisterFormData>({
     resolver: zodResolver(registerFormSchema),
-    mode: "onChange",
+    mode: "onBlur",
     defaultValues: {
       fullName: "",
       username: "",

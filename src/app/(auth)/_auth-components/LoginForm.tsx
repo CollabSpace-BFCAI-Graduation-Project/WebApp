@@ -1,6 +1,5 @@
 "use client";
 
-import { UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -12,17 +11,13 @@ import { FormController } from "@/components/shared/FormController";
 import Link from "next/link";
 import { SeparatorWithText } from "@/components/shared/separatorWithText";
 import { PasswordInput } from "@/components/shared/PasswordInput";
-import { useResetAuthForms } from "@/hooks/auth-forms";
+import { useAuthForms } from "@/hooks/useAuthForms";
 import { GoogleIcon } from "@/components/shared/GoogleIcon";
 import { useFormState } from "react-hook-form";
 import { useRouter } from "next/navigation";
 
-interface LoginFormProps {
-  form: UseFormReturn<LoginFormData>;
-}
-
-export function LoginForm({ form }: LoginFormProps) {
-  const resetAuthForms = useResetAuthForms();
+export function LoginForm() {
+  const { loginForm: form, resetAuthForms } = useAuthForms();
   const { isSubmitting } = useFormState({ control: form.control });
   const router = useRouter();
 
@@ -52,11 +47,16 @@ export function LoginForm({ form }: LoginFormProps) {
               name="email"
               label="Email Address"
               placeholder="pK9b0@example.com"
-              autoComplete="email"
               control={form.control}
               type="email"
+              autoComplete="email"
             />
-            <PasswordInput form={form} name="password" label="Password" />
+            <PasswordInput
+              form={form}
+              name="password"
+              label="Password"
+              autoComplete="current-password"
+            />
           </FieldGroup>
         </form>
       </CardContent>

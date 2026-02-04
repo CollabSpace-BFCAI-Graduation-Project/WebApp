@@ -8,8 +8,3 @@ export function useAuthForms() {
   }
   return context;
 }
-
-export function useResetAuthForms() {
-  const { resetAuthForms } = useAuthForms();
-  return resetAuthForms;
-}
