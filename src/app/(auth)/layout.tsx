@@ -7,7 +7,7 @@ interface AuthLayoutProps {
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <div className="w-full max-w-130 m-auto py-6 space-y-6">
+    <div className="max-w-4/5 sm:max-w-130 m-auto py-8 space-y-8">
       <AuthPagesHeader />
       <AuthFormsProvider>{children}</AuthFormsProvider>
     </div>

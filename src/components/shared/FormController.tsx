@@ -33,7 +33,7 @@ export const FormController = <T extends FieldValues>({
       name={name}
       control={control}
       render={({ field, fieldState }) => (
-        <Field data-invalid={fieldState.invalid} className="gap-0.5">
+        <Field data-invalid={fieldState.invalid} className="gap-1">
           <FieldLabel htmlFor={field.name} className="text-sm ms-1">
             {label}
           </FieldLabel>

@@ -2,14 +2,6 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
-@custom-variant ocean (&:is([data-theme="ocean"] *));
-@custom-variant ocean-dark (&:is([data-theme="ocean"].dark *));
-@custom-variant claude (&:is([data-theme="claude"] *));
-@custom-variant claude-dark (&:is([data-theme="claude"].dark *));
-@custom-variant clymorphism (&:is([data-theme="clymorphism"] *));
-@custom-variant clymorphism-dark (&:is([data-theme="clymorphism"].dark *));
-@custom-variant amethyst (&:is([data-theme="amethyst"] *));
-@custom-variant amethyst-dark (&:is([data-theme="amethyst"].dark *));
 
 @theme inline {
   --color-background: var(--background);
@@ -62,6 +54,7 @@
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
+  --breakpoint-xs: 400px;
 }
 
 :root {
