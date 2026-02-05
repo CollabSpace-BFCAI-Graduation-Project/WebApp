@@ -24,7 +24,7 @@ export const NavSidebarFooter = () => {
             open ? "opacity-100 max-w-[200px]" : "opacity-0 max-w-0",
           )}
         >
-          Username
+          mohamed-abdelhafiz-dev
         </span>
       </Button>
     </SidebarFooter>

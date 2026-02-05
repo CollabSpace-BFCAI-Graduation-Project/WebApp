@@ -1,23 +1,19 @@
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { NavSidebar } from "./_dashboard-components/nav-sidebar/NavSidebar";
 import { NavSidebarTrigger } from "./_dashboard-components/nav-sidebar/NavSidebarTrigger";
+import { cookies } from "next/headers";
 
 interface SharedLayoutProps {
   children: React.ReactNode;
 }
-export default function SharedLayout({ children }: SharedLayoutProps) {
+export default async function SharedLayout({ children }: SharedLayoutProps) {
+  const cookieStore = await cookies();
+  const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={defaultOpen}>
       <NavSidebar />
-      <SidebarInset>
-        <main>
-          <NavSidebarTrigger />
-          {children}
-        </main>
-      </SidebarInset>
+      <NavSidebarTrigger />
+      <main className="w-full">{children}</main>
     </SidebarProvider>
   );
 }

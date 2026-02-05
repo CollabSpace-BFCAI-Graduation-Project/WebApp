@@ -6,3 +6,7 @@ export type ThemeColor =
   | "clymorphism"
   | "amethyst"
   | "ocean";
+
+export type SpacesLayout = "grid" | "list";
+
+export type FilterTab = "all" | "favorites" | "owned";

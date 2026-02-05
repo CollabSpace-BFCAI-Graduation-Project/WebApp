@@ -1,7 +1,16 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant default-theme (&:is([data-theme="default"] *));
+@custom-variant default-theme-dark (&:is([data-theme="default"] .dark *));
+@custom-variant ocean (&:is([data-theme="ocean"] *));
+@custom-variant ocean-dark (&:is([data-theme="ocean"] .dark *));
+@custom-variant claude (&:is([data-theme="claude"] *));
+@custom-variant claude-dark (&:is([data-theme="claude"] .dark *));
+@custom-variant clymorphism (&:is([data-theme="clymorphism"] *));
+@custom-variant clymorphism-dark (&:is([data-theme="clymorphism"] .dark *));
+@custom-variant amethyst (&:is([data-theme="amethyst"] *));
+@custom-variant amethyst-dark (&:is([data-theme="amethyst"] .dark *));
 
 @theme inline {
   --color-background: var(--background);
@@ -57,7 +66,7 @@
   --breakpoint-xs: 400px;
 }
 
-:root {
+[data-theme="default"] {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -121,7 +130,7 @@
   --spacing: 0.25rem;
 }
 
-.dark {
+[data-theme="default"].dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);

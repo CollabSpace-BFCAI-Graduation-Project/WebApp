@@ -1,3 +1,4 @@
+"use client";
 import {
   SidebarContent,
   SidebarGroup,
@@ -5,50 +6,66 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { Grid, Users, MessageSquare, Settings, Bell } from "lucide-react";
 import Link from "next/link";
 
-export const NavSidebarContent = () => {
-  const navLinks = [
-    {
-      name: "Spaces",
-      url: "/",
-      icon: Grid,
-    },
-    {
-      name: "Chat",
-      url: "/chat",
-      icon: MessageSquare,
-    },
-    {
-      name: "Team",
-      url: "/team",
-      icon: Users,
-    },
-  ];
+const navLinks = [
+  {
+    name: "Spaces",
+    url: "/",
+    icon: Grid,
+  },
+  {
+    name: "Chat",
+    url: "/chat",
+    icon: MessageSquare,
+  },
+  {
+    name: "Team",
+    url: "/team",
+    icon: Users,
+  },
+];
 
-  const navActions = [
-    {
-      name: "Settings",
-      url: "/settings",
-      icon: Settings,
-    },
-    {
-      name: "Notifications",
-      url: "/notifications",
-      icon: Bell,
-    },
-  ];
+const navActions = [
+  {
+    name: "Settings",
+    url: "/settings",
+    icon: Settings,
+  },
+  {
+    name: "Notifications",
+    url: "/notifications",
+    icon: Bell,
+  },
+];
+
+export const NavSidebarContent = () => {
+  const { toggleSidebar, isMobile } = useSidebar();
   return (
     <SidebarContent className="flex justify-between">
       <SidebarGroup>
         <SidebarGroupContent>
           <SidebarMenu>
-            {navLinks.map((item) => (
+            {navLinks.map((item, index) => (
               <SidebarMenuItem key={item.name}>
-                <SidebarMenuButton asChild>
-                  <Link href={item.url}>
+                <SidebarMenuButton
+                  asChild
+                  isActive={index === 0}
+                  className="
+                  data-[active=true]:default-theme:bg-foreground/70
+                  data-[active=true]:default-theme:text-background"
+                >
+                  <Link
+                    href={item.url}
+                    onClick={() => {
+                      if (isMobile) {
+                        toggleSidebar();
+                      }
+                    }}
+                  >
                     <item.icon />
                     <span>{item.name}</span>
                   </Link>
@@ -61,9 +78,15 @@ export const NavSidebarContent = () => {
       <SidebarGroup>
         <SidebarGroupContent>
           <SidebarMenu>
-            {navActions.map((item) => (
+            {navActions.map((item, index) => (
               <SidebarMenuItem key={item.name}>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton
+                  asChild
+                  isActive={index === 0}
+                  className="
+                  data-[active=true]:default-theme:bg-foreground/70
+                  data-[active=true]:default-theme:text-background"
+                >
                   <Link href={item.url}>
                     <item.icon />
                     <span>{item.name}</span>
