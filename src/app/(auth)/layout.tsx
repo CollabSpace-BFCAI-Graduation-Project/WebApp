@@ -1,5 +1,5 @@
-import { AuthFormsProvider } from "@/components/providers/AuthFormsProvider";
-import { AuthPagesHeader } from "./_auth-components/AuthPagesHeader";
+import { AuthFormsProvider } from "@/contexts/AuthForms";
+import { AuthPagesHeader } from "@/features/auth/components/AuthPagesHeader";
 
 interface AuthLayoutProps {
   children: React.ReactNode;

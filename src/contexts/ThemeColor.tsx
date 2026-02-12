@@ -1,8 +1,15 @@
 "use client";
 
-import { ThemeColorContext } from "@/contexts/themeColorContext";
 import { ThemeColor } from "@/lib/types";
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+
+const ThemeColorContext = createContext<{
+  themeColor: ThemeColor;
+  setThemeColor: (themeColor: ThemeColor) => void;
+}>({
+  themeColor: "default",
+  setThemeColor: () => {},
+});
 
 export const ThemeColorProvider = ({
   children,
@@ -24,4 +31,12 @@ export const ThemeColorProvider = ({
       {children}
     </ThemeColorContext.Provider>
   );
+};
+
+export const useThemeColor = () => {
+  const context = useContext(ThemeColorContext);
+  if (!context) {
+    throw new Error("useThemeColor must be used within a ThemeColorProvider");
+  }
+  return context;
 };

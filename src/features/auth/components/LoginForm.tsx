@@ -11,7 +11,7 @@ import { FormController } from "@/components/shared/FormController";
 import Link from "next/link";
 import { SeparatorWithText } from "@/components/shared/separatorWithText";
 import { PasswordInput } from "@/components/shared/PasswordInput";
-import { useAuthForms } from "@/hooks/useAuthForms";
+import { useAuthForms } from "@/features/auth/hooks/useAuthForms";
 import { GoogleIcon } from "@/components/shared/GoogleIcon";
 import { useFormState } from "react-hook-form";
 import { useRouter } from "next/navigation";

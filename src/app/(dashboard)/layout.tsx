@@ -1,6 +1,6 @@
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { NavSidebar } from "./_dashboard-components/nav-sidebar/NavSidebar";
-import { NavSidebarTrigger } from "./_dashboard-components/nav-sidebar/NavSidebarTrigger";
+import { NavSidebar } from "@/components/layout/nav-sidebar/NavSidebar";
+import { NavSidebarTrigger } from "@/components/layout/nav-sidebar/NavSidebarTrigger";
 import { cookies } from "next/headers";
 
 interface SharedLayoutProps {

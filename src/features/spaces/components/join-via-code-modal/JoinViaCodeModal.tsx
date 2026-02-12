@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowRight, Link } from "lucide-react";
 import { useState } from "react";
 
-export function JoinViaCode() {
+export function JoinViaCodeModal() {
   const [open, setOpen] = useState(false);
   const [code, setCode] = useState("");
   return (

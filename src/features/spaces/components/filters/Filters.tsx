@@ -18,7 +18,7 @@ export const Filters = () => {
         <CategorySelect />
         <StatusSelect />
         <SortSelect />
-        <SearchInput /> 
+        <SearchInput wrapperClassName="w-full lg:min-w-[200px]" />
       </div>
       <LayoutTabs
         layout={layout}

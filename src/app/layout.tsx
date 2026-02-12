@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { ThemeProvider } from "@/contexts/Theme";
 import { Toaster } from "@/components/ui/sonner";
-import { ThemeColorProvider } from "@/components/providers/ThemeColorProvider";
+import { ThemeColorProvider } from "@/contexts/ThemeColor";
 import { cookies } from "next/headers";
 import { ThemeColor } from "@/lib/types";
 

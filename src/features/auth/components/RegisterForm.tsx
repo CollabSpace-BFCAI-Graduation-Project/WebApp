@@ -5,7 +5,6 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { RegisterFormData } from "@/schemas/auth-forms";
 import { ArrowRight } from "lucide-react";
 import { FieldGroup } from "@/components/ui/field";
 import { FormController } from "@/components/shared/FormController";
@@ -13,7 +12,8 @@ import Link from "next/link";
 import { PasswordInput } from "@/components/shared/PasswordInput";
 import { GoogleIcon } from "@/components/shared/GoogleIcon";
 import { useRouter } from "next/navigation";
-import { useAuthForms } from "@/hooks/useAuthForms";
+import { RegisterFormData } from "@/features/auth/schemas";
+import { useAuthForms } from "@/contexts/AuthForms";
 
 export function RegisterForm() {
   const { registerForm: form, resetAuthForms } = useAuthForms();

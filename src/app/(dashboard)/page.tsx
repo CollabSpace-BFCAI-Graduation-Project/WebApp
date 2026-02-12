@@ -1,6 +1,6 @@
-import { Filters } from "./_dashboard-components/spaces/filters/Filters";
-import { Header } from "./_dashboard-components/spaces/header/Header";
-import { EmptySpaces } from "./_dashboard-components/spaces/EmptySpaces";
+import { EmptySpaces } from "@/features/spaces/components/EmptySpaces";
+import { Filters } from "@/features/spaces/components/filters/Filters";
+import { Header } from "@/features/spaces/components/header/Header";
 import { Metadata } from "next";
 
 export default function HomePage() {
