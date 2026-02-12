@@ -1,5 +1,5 @@
 import { Filters } from "./_dashboard-components/spaces/filters/Filters";
-import { Header } from "./_dashboard-components/spaces/Header";
+import { Header } from "./_dashboard-components/spaces/header/Header";
 import { EmptySpaces } from "./_dashboard-components/spaces/EmptySpaces";
 import { Metadata } from "next";
 

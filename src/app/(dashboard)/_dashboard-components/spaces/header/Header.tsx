@@ -1,5 +1,6 @@
 import { TooltippedButton } from "@/components/shared/tooltippedButton";
-import { Globe, Link, Plus } from "lucide-react";
+import { Globe, Plus } from "lucide-react";
+import { JoinViaCode } from "./JoinViaCode";
 
 export const Header = () => {
   const user = {
@@ -21,14 +22,7 @@ export const Header = () => {
           <span className="hidden sm:inline-block">Find Spaces</span>
         </TooltippedButton>
 
-        <TooltippedButton
-          tooltip="Join via Code"
-          variant="outline"
-          hideTooltipBreakpoint="sm"
-        >
-          <Link className="w-4 h-4 mr-1 group-hover:rotate-180 transition-all duration-300" />
-          <span className="hidden sm:inline-block">Join via Code</span>
-        </TooltippedButton>
+        <JoinViaCode />
 
         <TooltippedButton
           tooltip="Create Space"

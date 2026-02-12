@@ -1,4 +1,4 @@
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { NavSidebar } from "./_dashboard-components/nav-sidebar/NavSidebar";
 import { NavSidebarTrigger } from "./_dashboard-components/nav-sidebar/NavSidebarTrigger";
 import { cookies } from "next/headers";
@@ -12,8 +12,10 @@ export default async function SharedLayout({ children }: SharedLayoutProps) {
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
       <NavSidebar />
-      <NavSidebarTrigger />
-      <main className="w-full">{children}</main>
+      <SidebarInset>
+        <NavSidebarTrigger />
+        {children}
+      </SidebarInset>
     </SidebarProvider>
   );
 }
