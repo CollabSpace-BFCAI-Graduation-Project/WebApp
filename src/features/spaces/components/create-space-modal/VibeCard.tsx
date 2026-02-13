@@ -16,7 +16,7 @@ export const VibeCard = ({ vibe }: VibeCardProps) => {
       className="flex flex-col gap-2 border border-foreground p-4 mt-4 h-auto hover:-translate-y-1 hover:-translate-x-1 transition-transform duration-300"
       variant="ghost"
       onClick={() => {
-        form.setValue("vibe", vibe.name);
+        form.setValue("vibe", vibe.name, { shouldValidate: true });
         nextStep();
       }}
     >

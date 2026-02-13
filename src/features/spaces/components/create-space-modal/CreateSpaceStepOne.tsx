@@ -80,8 +80,7 @@ export const CreateSpaceStepOne = () => {
                       {...field}
                       id="space-description"
                       placeholder="What happens in this space?"
-                      rows={6}
-                      className="min-h-24 resize-none"
+                      className="min-h-24 max-h-24 resize-none"
                       aria-invalid={fieldState.invalid}
                       maxLength={200}
                     />
@@ -108,6 +107,7 @@ export const CreateSpaceStepOne = () => {
           src="/create-space.jpg "
           alt="Create Space"
           fill
+          sizes="fill"
           className="hover:scale-105 hover:-rotate-2 transition-transform duration-500"
         />
       </div>

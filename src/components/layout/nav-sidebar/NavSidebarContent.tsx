@@ -8,8 +8,10 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Grid, Users, MessageSquare, Settings, Bell } from "lucide-react";
+import { Grid, Users, MessageSquare } from "lucide-react";
 import Link from "next/link";
+import { NotificationModal } from "../../../features/notifications/components/NotificationModal";
+import { SettingsModal } from "@/features/settings/components/SettingsModal";
 
 const navLinks = [
   {
@@ -26,19 +28,6 @@ const navLinks = [
     name: "Team",
     url: "/team",
     icon: Users,
-  },
-];
-
-const navActions = [
-  {
-    name: "Settings",
-    url: "/settings",
-    icon: Settings,
-  },
-  {
-    name: "Notifications",
-    url: "/notifications",
-    icon: Bell,
   },
 ];
 
@@ -78,22 +67,8 @@ export const NavSidebarContent = () => {
       <SidebarGroup>
         <SidebarGroupContent>
           <SidebarMenu>
-            {navActions.map((item, index) => (
-              <SidebarMenuItem key={item.name}>
-                <SidebarMenuButton
-                  asChild
-                  isActive={index === 0}
-                  className="
-                  data-[active=true]:default-theme:bg-foreground/70
-                  data-[active=true]:default-theme:text-background"
-                >
-                  <Link href={item.url}>
-                    <item.icon />
-                    <span>{item.name}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+            <NotificationModal />
+            <SettingsModal />
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>

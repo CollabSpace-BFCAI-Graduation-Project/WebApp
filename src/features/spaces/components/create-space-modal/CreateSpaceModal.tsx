@@ -11,31 +11,23 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createSpaceSchema, CreateSpaceFormValues } from "../../schemas";
 import { cn } from "@/lib/utils";
 
+const steps = {
+  1: <CreateSpaceStepOne />,
+  2: <CreateSpaceStepTwo />,
+  3: <CreateSpaceStepThree />,
+};
+
 export function CreateSpaceModal() {
-  const {
-    setIsOpen,
-    step,
-    isOpen,
-    spaceName,
-    description,
-    selectedVibe,
-    setSpaceName,
-    setDescription,
-    setSelectedVibe,
-  } = useCreateSpaceFormStore();
+  const { isOpen, setIsOpen, step } = useCreateSpaceFormStore();
 
   const form = useForm<CreateSpaceFormValues>({
     resolver: zodResolver(createSpaceSchema),
     defaultValues: {
-      name: spaceName,
-      description: description,
-      vibe: selectedVibe,
+      name: "",
+      description: "",
+      vibe: null,
     },
   });
-  const values = form.watch();
-  setSpaceName(values.name);
-  setDescription(values.description);
-  setSelectedVibe(values.vibe);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -58,9 +50,7 @@ export function CreateSpaceModal() {
             step === 3 ? "md:max-w-2xl" : "",
           )}
         >
-          {step === 1 && <CreateSpaceStepOne />}
-          {step === 2 && <CreateSpaceStepTwo />}
-          {step === 3 && <CreateSpaceStepThree />}
+          {steps[step]}
         </DialogContent>
       </FormProvider>
     </Dialog>

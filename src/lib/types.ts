@@ -4,3 +4,10 @@ export type ThemeColor =
   | "clymorphism"
   | "amethyst"
   | "ocean";
+
+export type SettingsTab =
+  | "Profile"
+  | "My Requests"
+  | "Privacy"
+  | "Notifications"
+  | "General";
