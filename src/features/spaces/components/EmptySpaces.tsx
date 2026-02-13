@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -8,8 +9,10 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { LayoutDashboard } from "lucide-react";
+import { useCreateSpaceFormStore } from "@/store/create-space-form.store";
 
 export function EmptySpaces() {
+  const setIsOpen = useCreateSpaceFormStore((state) => state.setIsOpen);
   return (
     <Empty className="border border-dashed">
       <EmptyHeader>
@@ -22,7 +25,13 @@ export function EmptySpaces() {
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
-        <Button variant="outline" size="sm">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            setIsOpen(true);
+          }}
+        >
           Create Space
         </Button>
       </EmptyContent>

@@ -6,8 +6,8 @@ import { SortSelect } from "./SortSelect";
 import { LayoutTabs } from "./LayoutTabs";
 import { SearchInput } from "./SearchInput";
 import { useState } from "react";
-import { SpacesLayout } from "@/lib/types";
 import { FilterTabs } from "./FilterTabs";
+import { SpacesLayout } from "../../types";
 
 export const Filters = () => {
   const [layout, setLayout] = useState<SpacesLayout>("grid");

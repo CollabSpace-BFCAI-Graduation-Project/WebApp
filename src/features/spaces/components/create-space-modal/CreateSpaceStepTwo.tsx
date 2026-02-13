@@ -1,39 +1,22 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Field, FieldGroup } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
+import { VibeCard } from "./VibeCard";
+import { useCreateSpaceFormStore } from "@/store/create-space-form.store";
+import { vibes } from "../../constants";
 
-interface Props {
-  setStep: Dispatch<SetStateAction<number>>;
-  spaceName: string;
-  setSpaceName: Dispatch<SetStateAction<string>>;
-  description: string;
-  setDescription: Dispatch<SetStateAction<string>>;
-}
 
-export const CreateSpaceStepTwo = ({
-  setStep,
-  spaceName,
-  setSpaceName,
-  description,
-  setDescription,
-}: Props) => {
+export const CreateSpaceStepTwo = () => {
+  const prevStep = useCreateSpaceFormStore((state) => state.prevStep);
   return (
-    <DialogContent className="sm:max-w-lg">
+    <>
       <DialogHeader className="flex flex-row">
-        <Button variant="ghost" onClick={() => setStep((prev) => prev - 1)}>
+        <Button variant="ghost" onClick={prevStep}>
           <ArrowLeft />
         </Button>
         <div className="flex flex-col gap-4">
@@ -46,35 +29,11 @@ export const CreateSpaceStepTwo = ({
           </div>
         </div>
       </DialogHeader>
-      <FieldGroup>
-        <Field>
-          <Label htmlFor="spaceName">Space Name</Label>
-          <Input
-            id="spaceName"
-            name="spaceName"
-            placeholder="Space Name"
-            value={spaceName}
-            onChange={(e) => setSpaceName(e.target.value)}
-          />
-        </Field>
-        <Field>
-          <Label htmlFor="description">Description</Label>
-          <Textarea
-            id="description"
-            name="description"
-            placeholder="Description"
-            className="resize-none h-[100px]"
-            maxLength={200}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </Field>
-      </FieldGroup>
-      <DialogFooter>
-        <Button className="w-full" onClick={() => setStep((prev) => prev + 1)}>
-          Next Step
-        </Button>
-      </DialogFooter>
-    </DialogContent>
+      <div className="-me-4 max-h-[50vh] overflow-y-auto px-4 grid grid-cols-2 gap-4">
+        {vibes.map((vibe) => (
+          <VibeCard key={vibe.name} vibe={vibe} />
+        ))}
+      </div>
+    </>
   );
 };

@@ -1,7 +1,7 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FilterTab } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { FilterTab } from "../../types";
 
 export function FilterTabs({ className }: { className?: string }) {
   const [value, setValue] = useState<FilterTab>("all");
