@@ -31,7 +31,7 @@ export default async function RootLayout({
   children,
 }: Readonly<RootLayoutProps>) {
   const cookieStore = await cookies();
-  const themeColor = cookieStore.get("themeColor")?.value || "claude";
+  const themeColor = cookieStore.get("themeColor")?.value || "default";
   return (
     <html lang="en" data-theme={themeColor} suppressHydrationWarning>
       <body

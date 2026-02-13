@@ -47,7 +47,7 @@ export const SettingsModalSidebar = ({
           <span className="text-lg font-bold">Settings</span>
         </DialogTitle>
       </DialogHeader>
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-2">
         {settingsNav.map(({ Icon, name }) => (
           <button
             key={name}

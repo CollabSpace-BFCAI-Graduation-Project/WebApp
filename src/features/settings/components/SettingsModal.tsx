@@ -5,12 +5,13 @@ import { SettingsModalSidebar } from "./SettingsModalSidebar";
 import { useState } from "react";
 import { SettingsTab } from "@/lib/types";
 import { ProfileSettings } from "./profile-settings/ProfileSettings";
+import { RequestsSettings } from "./requests-settings/RequestsSettings";
 
 const settingsContent: {
   [key in SettingsTab]: React.ReactNode;
 } = {
   Profile: <ProfileSettings />,
-  "My Requests": <div>My Requests Settings Content</div>,
+  "My Requests": <RequestsSettings />,
   Privacy: <div>Privacy Settings Content</div>,
   Notifications: <div>Notifications Settings Content</div>,
   General: <div>General Settings Content</div>,
