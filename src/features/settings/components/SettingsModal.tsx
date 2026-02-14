@@ -1,47 +1,33 @@
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { Settings } from "lucide-react";
+"use client";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { SettingsModalSidebar } from "./SettingsModalSidebar";
-import { useState } from "react";
 import { SettingsTab } from "@/lib/types";
 import { ProfileSettings } from "./profile-settings/ProfileSettings";
 import { RequestsSettings } from "./requests-settings/RequestsSettings";
+import { PrivacySettings } from "./privacy-settings/PrivacySettings";
+import { NotificationsSettings } from "./notifications-settings/NotificationsSettings";
+import { GeneralSettings } from "./general-settings/GeneralSettings";
+import { useSettingsModalStore } from "@/store/settings-modal-store";
 
 const settingsContent: {
   [key in SettingsTab]: React.ReactNode;
 } = {
   Profile: <ProfileSettings />,
   "My Requests": <RequestsSettings />,
-  Privacy: <div>Privacy Settings Content</div>,
-  Notifications: <div>Notifications Settings Content</div>,
-  General: <div>General Settings Content</div>,
+  Privacy: <PrivacySettings />,
+  Notifications: <NotificationsSettings />,
+  General: <GeneralSettings />,
 };
 
 export const SettingsModal = () => {
-  const [activeTab, setActiveTab] = useState<SettingsTab>("Profile");
+  const isOpen = useSettingsModalStore((state) => state.isOpen);
+  const setIsOpen = useSettingsModalStore((state) => state.setIsOpen);
+  const activeTab = useSettingsModalStore((state) => state.activeTab);
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <SidebarMenuItem>
-          <SidebarMenuButton
-            asChild
-            className="
-                  data-[active=true]:default-theme:bg-foreground/70
-                  data-[active=true]:default-theme:text-background"
-          >
-            <button>
-              <Settings />
-              <span>Settings</span>
-            </button>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="max-w-3xl! p-0 overflow-hidden h-[600px] flex">
         {/* Sidebar */}
-        <SettingsModalSidebar
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
+        <SettingsModalSidebar />
 
         {/* Content */}
         <div className="flex-1">{settingsContent[activeTab]}</div>

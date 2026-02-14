@@ -1,8 +1,11 @@
+"use client";
+
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Settings, User, Clock, Lock, Bell } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
+import { Settings, User, Clock, Lock, Bell, LogOut } from "lucide-react";
 import { SettingsTab } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useSettingsModalStore } from "@/store/settings-modal-store";
+import { Button } from "@/components/ui/button";
 
 const settingsNav: {
   name: SettingsTab;
@@ -30,15 +33,10 @@ const settingsNav: {
   },
 ];
 
-type SettingsModalSidebarProps = {
-  activeTab: SettingsTab;
-  setActiveTab: Dispatch<SetStateAction<SettingsTab>>;
-};
+export const SettingsModalSidebar = () => {
+  const activeTab = useSettingsModalStore((state) => state.activeTab);
+  const setActiveTab = useSettingsModalStore((state) => state.setActiveTab);
 
-export const SettingsModalSidebar = ({
-  activeTab,
-  setActiveTab,
-}: SettingsModalSidebarProps) => {
   return (
     <div className="w-48 p-2 pt-4 flex flex-col gap-4">
       <DialogHeader>
@@ -47,12 +45,12 @@ export const SettingsModalSidebar = ({
           <span className="text-lg font-bold">Settings</span>
         </DialogTitle>
       </DialogHeader>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col flex-1 gap-2">
         {settingsNav.map(({ Icon, name }) => (
           <button
             key={name}
             className={cn(
-              "w-full justify-start flex items-center gap-2 p-1.5 hover:bg-accent rounded-md transition-colors",
+              "w-full justify-start flex items-center gap-2 p-1.5 hover:bg-primary/40 rounded-md transition-colors",
               activeTab === name &&
                 "bg-primary text-primary-foreground hover:bg-primary/90",
             )}
@@ -63,6 +61,13 @@ export const SettingsModalSidebar = ({
           </button>
         ))}
       </div>
+      <Button
+        variant="ghost"
+        className="w-full text-destructive justify-start hover:bg-destructive! hover:text-destructive-foreground! transition-colors duration-300"
+      >
+        <LogOut className="size-4" />
+        Logout
+      </Button>
     </div>
   );
 };
