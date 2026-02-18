@@ -5,7 +5,7 @@ import { Metadata } from "next";
 
 export default function SpacesPage() {
   return (
-    <div className="space-y-6 p-6 animate-in fade-in slide-in-from-top-4 duration-500">
+    <div className="space-y-6 p-6">
       <Header />
       <Filters />
       <EmptySpaces />

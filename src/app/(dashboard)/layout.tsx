@@ -16,7 +16,9 @@ export default async function DashboardLayout({
       <NavSidebar />
       <SidebarInset>
         <NavSidebarTrigger />
-        {children}
+        <div className="animate-in fade-in slide-in-from-top-4 duration-500">
+          {children}
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );

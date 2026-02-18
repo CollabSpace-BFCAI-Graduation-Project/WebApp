@@ -8,7 +8,7 @@ import {
 import { ArrowLeft } from "lucide-react";
 import { VibeCard } from "./VibeCard";
 import { useCreateSpaceFormStore } from "@/store/create-space-form.store";
-import { vibes } from "../../constants";
+import { vibes } from "@/lib/dummyData";
 
 
 export const CreateSpaceStepTwo = () => {
