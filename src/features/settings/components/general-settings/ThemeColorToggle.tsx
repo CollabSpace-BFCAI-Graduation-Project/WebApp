@@ -1,12 +1,10 @@
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { useThemeColor } from "@/contexts/ThemeColor";
+import { useThemeColor } from "@/contexts/Theme";
 import { ThemeColor } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { useTheme } from "next-themes";
 
 export function ThemeColorToggle() {
-  const { themeColor, setThemeColor } = useThemeColor();
-  const { resolvedTheme } = useTheme();
+  const { themeColor, setThemeColor,resolvedTheme } = useThemeColor();
 
   const themeColors = {
     default: { dark: "oklch(0.922 0 0)", light: "oklch(0.205 0 0)" },
@@ -31,10 +29,8 @@ export function ThemeColorToggle() {
           value={key}
           aria-label={`Toggle ${key}`}
           className={cn(
-            "rounded-full overflow-hidden h-6 w-6 p-0 cursor-pointer transition-all",
-            themeColor === key
-              ? "scale-[1.15] translate-y-0.5"
-              : "hover:scale-110 -translate-y-0.5",
+            "rounded-full overflow-hidden h-5 w-5 p-0 cursor-pointer transition-all",
+            themeColor === key ? "scale-[1.25]" : "hover:scale-110",
           )}
         >
           <span

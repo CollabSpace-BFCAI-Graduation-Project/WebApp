@@ -3,7 +3,7 @@ import { SidebarFooter, useSidebar } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useSettingsModalStore } from "@/store/settings-modal-store";
+import { useSettingsModalStore } from "@/store/settings-modal";
 
 export const NavSidebarFooter = () => {
   const { open } = useSidebar();

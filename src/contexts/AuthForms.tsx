@@ -10,14 +10,18 @@ import {
   registerFormSchema,
 } from "@/features/auth/schemas";
 
-const AuthFormsContext = createContext<{
+interface AuthFormsContextType {
   registerForm: UseFormReturn<RegisterFormData>;
   loginForm: UseFormReturn<LoginFormData>;
   resetAuthForms: () => void;
-}>({
+  clearAuthFormsErrors: () => void;
+}
+
+const AuthFormsContext = createContext<AuthFormsContextType>({
   registerForm: {} as UseFormReturn<RegisterFormData>,
   loginForm: {} as UseFormReturn<LoginFormData>,
   resetAuthForms: () => {},
+  clearAuthFormsErrors: () => {},
 });
 
 export const AuthFormsProvider = ({
@@ -50,9 +54,14 @@ export const AuthFormsProvider = ({
     registerForm.reset();
   };
 
+  const clearAuthFormsErrors = () => {
+    loginForm.clearErrors();
+    registerForm.clearErrors();
+  };
+
   return (
     <AuthFormsContext.Provider
-      value={{ registerForm, loginForm, resetAuthForms }}
+      value={{ registerForm, loginForm, resetAuthForms, clearAuthFormsErrors }}
     >
       {children}
     </AuthFormsContext.Provider>

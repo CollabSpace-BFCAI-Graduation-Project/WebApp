@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useCreateSpaceFormStore } from "@/store/create-space-form.store";
+import { useCreateSpaceFormStore } from "@/store/create-space-form";
 import { Vibe } from "../../types";
 import { useFormContext } from "react-hook-form";
 import { CreateSpaceFormValues } from "../../schemas";

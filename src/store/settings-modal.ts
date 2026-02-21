@@ -1,4 +1,4 @@
-import { SettingsTab } from "@/lib/types";
+import { SettingsTab } from "@/features/settings/types";
 import { create } from "zustand";
 
 interface SettingsModalState {

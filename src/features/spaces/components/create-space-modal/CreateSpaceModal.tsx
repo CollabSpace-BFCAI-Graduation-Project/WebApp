@@ -5,7 +5,7 @@ import { TooltippedButton } from "@/components/shared/tooltippedButton";
 import { CreateSpaceStepOne } from "./CreateSpaceStepOne";
 import { CreateSpaceStepTwo } from "./CreateSpaceStepTwo";
 import { CreateSpaceStepThree } from "./CreateSpaceStepThree";
-import { useCreateSpaceFormStore } from "@/store/create-space-form.store";
+import { useCreateSpaceFormStore } from "@/store/create-space-form";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createSpaceSchema, CreateSpaceFormValues } from "../../schemas";

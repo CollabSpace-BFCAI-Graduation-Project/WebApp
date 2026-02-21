@@ -7,9 +7,8 @@ import {
 } from "@/components/ui/dialog";
 import { ArrowLeft } from "lucide-react";
 import { VibeCard } from "./VibeCard";
-import { useCreateSpaceFormStore } from "@/store/create-space-form.store";
+import { useCreateSpaceFormStore } from "@/store/create-space-form";
 import { vibes } from "@/lib/dummyData";
-
 
 export const CreateSpaceStepTwo = () => {
   const prevStep = useCreateSpaceFormStore((state) => state.prevStep);

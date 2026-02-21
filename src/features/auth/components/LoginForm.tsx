@@ -17,8 +17,11 @@ import { LoginFormData } from "../schemas";
 import { useAuthForms } from "@/contexts/AuthForms";
 
 export function LoginForm() {
-  const { loginForm: form, resetAuthForms } = useAuthForms();
-  const { isSubmitting } = useFormState({ control: form.control });
+  const {
+    loginForm: { control, handleSubmit },
+    resetAuthForms,
+  } = useAuthForms();
+  const { isSubmitting } = useFormState({ control });
   const router = useRouter();
 
   const login = async (data: LoginFormData) => {
@@ -41,18 +44,18 @@ export function LoginForm() {
   return (
     <Card className="w-full gap-5">
       <CardContent>
-        <form onSubmit={form.handleSubmit(onSubmit)} id="login" noValidate>
+        <form onSubmit={handleSubmit(onSubmit)} id="login" noValidate>
           <FieldGroup className="gap-1.5">
             <FormController
               name="email"
               label="Email Address"
               placeholder="pK9b0@example.com"
-              control={form.control}
+              control={control}
               type="email"
               autoComplete="email"
             />
             <PasswordInput
-              form={form}
+              control={control}
               name="password"
               label="Password"
               autoComplete="current-password"

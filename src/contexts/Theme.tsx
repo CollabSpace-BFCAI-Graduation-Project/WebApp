@@ -1,11 +1,38 @@
 "use client";
 
-import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
+import { createContext, useContext, useState } from "react";
+import { ThemeColor } from "@/lib/types";
+import { useEffect } from "react";
+
+interface ThemeColorContextType {
+  themeColor: ThemeColor;
+  setThemeColor: (themeColor: ThemeColor) => void;
+}
+
+interface ThemeProviderProps extends React.ComponentProps<
+  typeof NextThemesProvider
+> {
+  initialThemeColor: ThemeColor;
+}
+
+const ThemeColorContext = createContext<ThemeColorContextType>({
+  themeColor: "default",
+  setThemeColor: () => {},
+});
 
 export function ThemeProvider({
+  initialThemeColor,
   children,
   ...props
-}: React.ComponentProps<typeof NextThemesProvider>) {
+}: ThemeProviderProps) {
+  const [themeColor, setThemeColor] = useState<ThemeColor>(initialThemeColor);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", themeColor);
+
+    document.cookie = `themeColor=${themeColor}; path=/; max-age=31536000; sameSite=lax`;
+  }, [themeColor]);
   return (
     <NextThemesProvider
       attribute="class"
@@ -14,7 +41,18 @@ export function ThemeProvider({
       disableTransitionOnChange
       {...props}
     >
-      {children}
+      <ThemeColorContext.Provider value={{ themeColor, setThemeColor }}>
+        {children}
+      </ThemeColorContext.Provider>
     </NextThemesProvider>
   );
 }
+
+export const useThemeColor = () => {
+  const themeColorContext = useContext(ThemeColorContext);
+  const themeContext = useTheme();
+  if (!themeColorContext || !themeContext) {
+    throw new Error("useThemeColor must be used within a ThemeProvider");
+  }
+  return { ...themeContext, ...themeColorContext };
+};

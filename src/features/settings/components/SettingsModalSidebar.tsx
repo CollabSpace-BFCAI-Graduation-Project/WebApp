@@ -2,10 +2,10 @@
 
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Settings, User, Clock, Lock, Bell, LogOut } from "lucide-react";
-import { SettingsTab } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { useSettingsModalStore } from "@/store/settings-modal-store";
+import { useSettingsModalStore } from "@/store/settings-modal";
 import { Button } from "@/components/ui/button";
+import { SettingsTab } from "../types";
 
 const settingsNav: {
   name: SettingsTab;

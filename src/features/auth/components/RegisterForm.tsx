@@ -16,8 +16,11 @@ import { RegisterFormData } from "@/features/auth/schemas";
 import { useAuthForms } from "@/contexts/AuthForms";
 
 export function RegisterForm() {
-  const { registerForm: form, resetAuthForms } = useAuthForms();
-  const { isSubmitting } = useFormState({ control: form.control });
+  const {
+    registerForm: { control, handleSubmit },
+    resetAuthForms,
+  } = useAuthForms();
+  const { isSubmitting } = useFormState({ control });
   const router = useRouter();
 
   const createAccount = async (data: RegisterFormData) => {
@@ -40,7 +43,7 @@ export function RegisterForm() {
   return (
     <Card className="w-full gap-5">
       <CardContent>
-        <form onSubmit={form.handleSubmit(onSubmit)} id="register" noValidate>
+        <form onSubmit={handleSubmit(onSubmit)} id="register" noValidate>
           <FieldGroup className="gap-1.5">
             <div className="flex flex-col xs:flex-row gap-3">
               <FormController
@@ -48,7 +51,7 @@ export function RegisterForm() {
                 label="Full Name"
                 placeholder="John Doe"
                 autoComplete="name"
-                control={form.control}
+                control={control}
                 type="text"
               />
               <FormController
@@ -56,7 +59,7 @@ export function RegisterForm() {
                 label="Username"
                 placeholder="john_doe"
                 autoComplete="username"
-                control={form.control}
+                control={control}
                 type="text"
               />
             </div>
@@ -65,18 +68,18 @@ export function RegisterForm() {
               label="Email Address"
               placeholder="pK9b0@example.com"
               autoComplete="email"
-              control={form.control}
+              control={control}
               type="email"
             />
             <div className="flex flex-col xs:flex-row gap-3">
               <PasswordInput
-                form={form}
+                control={control}
                 name="password"
                 label="Password"
                 autoComplete="new-password"
               />
               <PasswordInput
-                form={form}
+                control={control}
                 name="confirmPassword"
                 label="Confirm Password"
                 autoComplete="off"

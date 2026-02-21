@@ -1,8 +1,8 @@
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { useTheme } from "next-themes";
+import { useThemeColor } from "@/contexts/Theme";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme } = useThemeColor();
   return (
     <ToggleGroup
       type="single"

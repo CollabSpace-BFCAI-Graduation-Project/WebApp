@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/contexts/Theme";
 import { Toaster } from "@/components/ui/sonner";
-import { ThemeColorProvider } from "@/contexts/ThemeColor";
 import { cookies } from "next/headers";
 import { ThemeColor } from "@/lib/types";
 
@@ -37,10 +36,8 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider>
-          <ThemeColorProvider initialThemeColor={themeColor as ThemeColor}>
-            <main>{children}</main>
-          </ThemeColorProvider>
+        <ThemeProvider initialThemeColor={themeColor as ThemeColor}>
+          <main>{children}</main>
           <Toaster />
         </ThemeProvider>
       </body>

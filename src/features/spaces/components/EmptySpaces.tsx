@@ -9,7 +9,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { LayoutDashboard } from "lucide-react";
-import { useCreateSpaceFormStore } from "@/store/create-space-form.store";
+import { useCreateSpaceFormStore } from "@/store/create-space-form";
 
 export function EmptySpaces() {
   const setIsOpen = useCreateSpaceFormStore((state) => state.setIsOpen);

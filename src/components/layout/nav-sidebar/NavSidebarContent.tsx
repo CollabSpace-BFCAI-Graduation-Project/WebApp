@@ -12,7 +12,7 @@ import { Grid, Users, MessageSquare, Settings } from "lucide-react";
 import Link from "next/link";
 import { NotificationModal } from "../../../features/notifications/components/NotificationModal";
 import { SettingsModal } from "@/features/settings/components/SettingsModal";
-import { useSettingsModalStore } from "@/store/settings-modal-store";
+import { useSettingsModalStore } from "@/store/settings-modal";
 import { usePathname } from "next/navigation";
 
 const navLinks = [
@@ -47,10 +47,7 @@ export const NavSidebarContent = () => {
               <SidebarMenuItem key={item.name}>
                 <SidebarMenuButton
                   asChild
-                  isActive={
-                    item.url === path ||
-                    (item.url === "/chat" && path.includes("chat"))
-                  }
+                  isActive={item.url === path}
                   className="
                   data-[active=true]:default-theme:bg-foreground/70
                   data-[active=true]:default-theme:text-background"

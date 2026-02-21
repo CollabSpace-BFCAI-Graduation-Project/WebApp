@@ -1,13 +1,13 @@
 "use client";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { SettingsModalSidebar } from "./SettingsModalSidebar";
-import { SettingsTab } from "@/lib/types";
 import { ProfileSettings } from "./profile-settings/ProfileSettings";
 import { RequestsSettings } from "./requests-settings/RequestsSettings";
 import { PrivacySettings } from "./privacy-settings/PrivacySettings";
 import { NotificationsSettings } from "./notifications-settings/NotificationsSettings";
 import { GeneralSettings } from "./general-settings/GeneralSettings";
-import { useSettingsModalStore } from "@/store/settings-modal-store";
+import { useSettingsModalStore } from "@/store/settings-modal";
+import { SettingsTab } from "../types";
 
 const settingsContent: {
   [key in SettingsTab]: React.ReactNode;
