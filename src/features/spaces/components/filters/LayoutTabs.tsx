@@ -1,25 +1,20 @@
 import { TooltippedButton } from "@/components/shared/tooltippedButton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SpacesLayout } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { LayoutGrid, List } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
+import { useView } from "../../hooks/useView";
+import { SpacesLayout } from "../../types";
 
 interface LayoutTabsProps {
-  layout: SpacesLayout;
-  setLayout: Dispatch<SetStateAction<SpacesLayout>>;
   className?: string;
 }
 
-export function LayoutTabs({ layout, setLayout, className }: LayoutTabsProps) {
-  const handleValueChange = (value: string) => {
-    setLayout(value as SpacesLayout);
-    console.log(value);
-  };
+export function LayoutTabs({ className }: LayoutTabsProps) {
+  const [view, setView] = useView();
   return (
     <Tabs
-      value={layout}
-      onValueChange={handleValueChange}
+      value={view}
+      onValueChange={(value) => setView(value as SpacesLayout)}
       className={cn(className)}
     >
       <TabsList>
@@ -33,7 +28,7 @@ export function LayoutTabs({ layout, setLayout, className }: LayoutTabsProps) {
             <LayoutGrid
               className={cn(
                 "transition-all duration-300",
-                layout === "grid" && "scale-[1.1]",
+                view === "grid" && "scale-[1.1]",
               )}
             />
           </TooltippedButton>
@@ -48,7 +43,7 @@ export function LayoutTabs({ layout, setLayout, className }: LayoutTabsProps) {
             <List
               className={cn(
                 "transition-all duration-300",
-                layout === "list" && "scale-[1.1]",
+                view === "list" && "scale-[1.1]",
               )}
             />
           </TooltippedButton>

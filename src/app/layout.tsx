@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/contexts/Theme";
 import { Toaster } from "@/components/ui/sonner";
 import { cookies } from "next/headers";
 import { ThemeColor } from "@/lib/types";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,7 +38,9 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider initialThemeColor={themeColor as ThemeColor}>
-          <main>{children}</main>
+          <NuqsAdapter>
+            <main>{children}</main>
+          </NuqsAdapter>
           <Toaster />
         </ThemeProvider>
       </body>

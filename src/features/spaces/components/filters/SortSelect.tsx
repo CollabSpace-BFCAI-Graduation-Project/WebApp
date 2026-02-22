@@ -15,7 +15,8 @@ import {
   FolderOpen,
   History,
 } from "lucide-react";
-import { useState } from "react";
+import { useSort } from "../../hooks/useSort";
+import { SortFilter } from "../../types";
 
 const SORTS = {
   "newest-first": {
@@ -26,11 +27,11 @@ const SORTS = {
     label: "Oldest First",
     icon: <History className="text-primary" />,
   },
-  "name-a-z": {
+  "name-asc": {
     label: "Name (A-Z)",
     icon: <ArrowDownZa className="text-primary" />,
   },
-  "name-z-a": {
+  "name-desc": {
     label: "Name (Z-A)",
     icon: <ArrowUpAZ className="text-primary" />,
   },
@@ -40,21 +41,20 @@ const SORTS = {
   },
 } as const;
 
-type SortKey = keyof typeof SORTS;
 
 export const SortSelect = () => {
-  const [value, setValue] = useState<SortKey>("newest-first");
-
-  const handleValueChange = (value: string) => {
-    setValue(value as SortKey);
-    console.log(value);
-  };
+  const [sort, setSort] = useSort();
 
   return (
-    <Select value={value} onValueChange={handleValueChange}>
+    <Select
+      value={sort}
+      onValueChange={(value: SortFilter) => {
+        setSort(value);
+      }}
+    >
       <SelectTrigger className="w-full">
         <SelectValue>
-          {SORTS[value].icon} {SORTS[value].label}
+          {SORTS[sort].icon} {SORTS[sort].label}
         </SelectValue>
       </SelectTrigger>
 
