@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -44,8 +43,8 @@ export function ProfileSettings() {
   }
 
   return (
-    <Card className="w-full h-full">
-      <CardHeader>
+    <Card className="w-full h-full overflow-y-auto">
+      <CardHeader className="sr-only">
         <CardTitle className="text-lg font-bold">Profile Settings</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-8">

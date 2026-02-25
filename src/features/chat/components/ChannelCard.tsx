@@ -2,21 +2,19 @@ import { cn } from "@/lib/utils";
 import { Check, X, Pen, Trash2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import type { Dispatch, SetStateAction } from "react";
+import type { Channel } from "../types";
 interface ChannelCardProps {
-  channel: {
-    id: number;
-    name: string;
-  };
+  channel: Channel;
   isActive: boolean;
   setActiveChannel: Dispatch<SetStateAction<string>>;
-  setChannels: Dispatch<SetStateAction<{ id: number; name: string }[]>>;
+  removeChannel: (id: string) => void;
 }
 
 export const ChannelCard = ({
   channel,
   isActive,
   setActiveChannel,
-  setChannels,
+  removeChannel,
 }: ChannelCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [channelName, setChannelName] = useState(channel.name);
@@ -35,12 +33,28 @@ export const ChannelCard = ({
     }
   }, [isActive]);
 
+  const handleChannelNameChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    const input = e.currentTarget;
+
+    if ("key" in e && e.key === "Enter" && input.value.trim().length) {
+      e.preventDefault();
+      setIsEditing(false);
+      //call api to update the name
+      return;
+    }
+    setChannelName(input.value);
+  };
+
   return (
     <div
       onClick={() => setActiveChannel(channel.name)}
       className={cn(
         "flex items-center justify-between p-3 rounded-lg group",
-        isActive ? "bg-primary text-primary-foreground" : "hover:bg-secondary",
+        isActive ? "bg-primary text-primary-foreground" : "hover:bg-primary/50",
       )}
     >
       {isEditing ? (
@@ -51,14 +65,16 @@ export const ChannelCard = ({
               ref={channelNameInputRef}
               placeholder="channel-name"
               value={channelName}
-              onChange={(e) => setChannelName(e.target.value)}
-              className="border-none outline-0 placeholder:text-secondary!  selection:bg-secondary"
+              onChange={handleChannelNameChange}
+              onKeyDown={handleChannelNameChange}
+              className="border-none outline-0 placeholder:text-secondary!  selection:bg-secondary selection:text-secondary-foreground"
             />
           </div>
           <div className="flex items-center gap-2">
             <Check
               className="size-5 text-green-500 hover:text-green-400 rounded p-0.5 transition duration-300 cursor-pointer"
               onClick={() => {
+                if (!channelName.trim().length) return;
                 setIsEditing(false);
                 //call api to update the name
               }}
@@ -76,7 +92,7 @@ export const ChannelCard = ({
         </>
       ) : (
         <>
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center selection:bg-secondary selection:text-secondary-foreground">
             <span className="">#</span>
             <span>{channelName}</span>
           </div>
@@ -90,11 +106,7 @@ export const ChannelCard = ({
             />
             <Trash2
               className="size-5 text-destructive hover:text-destructive/60 rounded p-0.5 transition duration-300 cursor-pointer"
-              onClick={() => {
-                setChannels((prev) =>
-                  prev.filter((ch) => ch.id !== channel.id),
-                );
-              }}
+              onClick={() => removeChannel(channel.id)}
             />
           </div>
         </>

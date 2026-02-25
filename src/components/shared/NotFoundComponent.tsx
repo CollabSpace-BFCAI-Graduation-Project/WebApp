@@ -1,16 +1,43 @@
+import { FullWidthDivider } from "@/components/ui/full-width-divider";
+import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { HomeIcon } from "lucide-react";
 import Link from "next/link";
-import { buttonVariants } from "../ui/button";
 
-export default function NotFoundComponent() {
+export const NotFoundComponent = () => {
   return (
-    <div className="flex flex-col items-center justify-center h-screen gap-4">
-      <h1 className="text-4xl font-extrabold">404 - Page Not Found</h1>
-      <p className="text-muted-foreground">
-        The page you are looking for does not exist.
-      </p>
-      <Link href="/" className={buttonVariants({ variant: "default" })}>
-        Go back to home
-      </Link>
+    <div className="flex w-full items-center justify-center overflow-hidden">
+      <div className="flex h-screen items-center border-x">
+        <div>
+          <FullWidthDivider />
+          <Empty>
+            <EmptyHeader>
+              <EmptyTitle className="font-black font-mono text-8xl">
+                404
+              </EmptyTitle>
+              <EmptyDescription className="text-nowrap">
+                The page you&apos;re looking for might have been <br />
+                moved or doesn&apos;t exist.
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button asChild className="w-1/2 mx-auto">
+                <Link href="/">
+                  <HomeIcon data-icon="inline-start" />
+                  Go Home
+                </Link>
+              </Button>
+            </EmptyContent>
+          </Empty>
+          <FullWidthDivider />
+        </div>
+      </div>
     </div>
   );
-}
+};

@@ -11,7 +11,7 @@ import { Clock } from "lucide-react";
 
 export function RequestsSettings() {
   return (
-    <Card className="w-full h-full">
+    <Card className="w-full h-full overflow-y-auto pt-4">
       <CardHeader className="space-y-2">
         <CardTitle className="text-lg font-bold flex items-center gap-2">
           <Clock className="w-5 h-5" />

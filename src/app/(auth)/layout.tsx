@@ -1,4 +1,4 @@
-import { AuthFormsProvider } from "@/contexts/AuthForms";
+import { AuthFormsProvider } from "@/context/AuthForms";
 import { AuthPagesHeader } from "@/features/auth/components/AuthPagesHeader";
 
 interface AuthLayoutProps {

@@ -6,16 +6,16 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "@/components/ui/sidebar";
 import { Grid, Users, MessageSquare, Settings } from "lucide-react";
-import Link from "next/link";
-import { NotificationModal } from "../../../features/notifications/components/NotificationModal";
+
 import { SettingsModal } from "@/features/settings/components/SettingsModal";
 import { useSettingsModalStore } from "@/store/settings-modal";
-import { usePathname } from "next/navigation";
+import { NotificationModal } from "@/features/notifications/components/NotificationModal";
+import { SidebarLink } from "./SidebarLink";
+import { SidebarLinkItem } from "@/lib/types";
 
-const navLinks = [
+const sidebarLinks: SidebarLinkItem[] = [
   {
     name: "Spaces",
     url: "/",
@@ -33,38 +33,17 @@ const navLinks = [
   },
 ];
 
-export const NavSidebarContent = () => {
-  const { toggleSidebar, isMobile } = useSidebar();
+export const AppSidebarContent = () => {
   const setIsOpen = useSettingsModalStore((state) => state.setIsOpen);
   const setActiveTab = useSettingsModalStore((state) => state.setActiveTab);
-  const path = usePathname();
+
   return (
     <SidebarContent className="flex justify-between">
       <SidebarGroup>
         <SidebarGroupContent>
           <SidebarMenu>
-            {navLinks.map((item) => (
-              <SidebarMenuItem key={item.name}>
-                <SidebarMenuButton
-                  asChild
-                  isActive={item.url === path}
-                  className="
-                  data-[active=true]:default-theme:bg-foreground/70
-                  data-[active=true]:default-theme:text-background"
-                >
-                  <Link
-                    href={item.url}
-                    onClick={() => {
-                      if (isMobile) {
-                        toggleSidebar();
-                      }
-                    }}
-                  >
-                    <item.icon />
-                    <span>{item.name}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+            {sidebarLinks.map((item) => (
+              <SidebarLink key={item.url} item={item} />
             ))}
           </SidebarMenu>
         </SidebarGroupContent>

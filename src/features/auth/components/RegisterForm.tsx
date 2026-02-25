@@ -13,7 +13,7 @@ import { PasswordInput } from "@/components/shared/PasswordInput";
 import { GoogleIcon } from "@/components/shared/GoogleIcon";
 import { useRouter } from "next/navigation";
 import { RegisterFormData } from "@/features/auth/schemas";
-import { useAuthForms } from "@/contexts/AuthForms";
+import { useAuthForms } from "@/context/AuthForms";
 
 export function RegisterForm() {
   const {

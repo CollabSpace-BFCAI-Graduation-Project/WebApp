@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useSettingsModalStore } from "@/store/settings-modal";
 
-export const NavSidebarFooter = () => {
+export const AppSidebarFooter = () => {
   const { open } = useSidebar();
   const setIsOpen = useSettingsModalStore((state) => state.setIsOpen);
   const setActiveTab = useSettingsModalStore((state) => state.setActiveTab);

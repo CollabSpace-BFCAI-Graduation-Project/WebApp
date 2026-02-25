@@ -4,8 +4,8 @@ import { ThemeColorToggle } from "./ThemeColorToggle";
 
 export function GeneralSettings() {
   return (
-    <Card className="w-full h-full">
-      <CardHeader className="space-y-2">
+    <Card className="w-full h-full overflow-y-auto pt-4">
+      <CardHeader className="space-y-2 sr-only">
         <CardTitle className="text-lg font-bold">General</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">

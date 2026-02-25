@@ -10,8 +10,8 @@ import { DeleteAccountCard } from "./DeleteAccountCard";
 
 export function PrivacySettings() {
   return (
-    <Card className="w-full h-full">
-      <CardHeader className="space-y-2">
+    <Card className="w-full h-full overflow-y-auto pt-4">
+      <CardHeader className="space-y-2 sr-only">
         <CardTitle className="text-lg font-bold">Privacy Settings</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-6 overflow-y-auto">

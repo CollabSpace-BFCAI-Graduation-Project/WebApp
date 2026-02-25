@@ -6,3 +6,9 @@ export type Chat = {
   category: SpaceCategory;
   background: string;
 };
+
+
+export interface Channel {
+  id: string;
+  name: string;
+}

@@ -14,7 +14,7 @@ import { GoogleIcon } from "@/components/shared/GoogleIcon";
 import { useFormState } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { LoginFormData } from "../schemas";
-import { useAuthForms } from "@/contexts/AuthForms";
+import { useAuthForms } from "@/context/AuthForms";
 
 export function LoginForm() {
   const {

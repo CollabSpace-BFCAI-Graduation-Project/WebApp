@@ -1,73 +1,70 @@
-"use client";
-
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Settings, User, Clock, Lock, Bell, LogOut } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useSettingsModalStore } from "@/store/settings-modal";
-import { Button } from "@/components/ui/button";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarSeparator,
+} from "@/components/ui/sidebar";
 import { SettingsTab } from "../types";
+import { LogOut, User, Clock, Lock, Bell, Settings } from "lucide-react";
+import { LucideIcon } from "lucide-react";
+import { SettingsSidebarItem } from "./SettingSidebarItem";
+import { useSettingsModalStore } from "@/store/settings-modal";
+import { useCallback } from "react";
+import { Button } from "@/components/ui/button";
 
-const settingsNav: {
-  name: SettingsTab;
-  Icon: React.ReactNode;
-}[] = [
-  {
-    name: "Profile",
-    Icon: <User className="size-4" />,
-  },
-  {
-    name: "My Requests",
-    Icon: <Clock className="size-4" />,
-  },
-  {
-    name: "Privacy",
-    Icon: <Lock className="size-4" />,
-  },
-  {
-    name: "Notifications",
-    Icon: <Bell className="size-4" />,
-  },
-  {
-    name: "General",
-    Icon: <Settings className="size-4" />,
-  },
+const navItems: { tab: SettingsTab; Icon: LucideIcon }[] = [
+  { tab: "Profile", Icon: User },
+  { tab: "My Requests", Icon: Clock },
+  { tab: "Privacy", Icon: Lock },
+  { tab: "Notifications", Icon: Bell },
+  { tab: "General", Icon: Settings },
 ];
 
 export const SettingsModalSidebar = () => {
-  const activeTab = useSettingsModalStore((state) => state.activeTab);
-  const setActiveTab = useSettingsModalStore((state) => state.setActiveTab);
+  const activeTab = useSettingsModalStore((s) => s.activeTab);
+  const setActiveTab = useSettingsModalStore((s) => s.setActiveTab);
+
+  const handleTabChange = useCallback(
+    (tab: SettingsTab) => {
+      setActiveTab(tab);
+    },
+    [setActiveTab],
+  );
 
   return (
-    <div className="w-48 p-2 pt-4 flex flex-col gap-4">
-      <DialogHeader>
-        <DialogTitle className="flex items-center gap-2 pl-1">
-          <Settings className="size-6" />
-          <span className="text-lg font-bold">Settings</span>
-        </DialogTitle>
-      </DialogHeader>
-      <div className="flex flex-col flex-1 gap-2">
-        {settingsNav.map(({ Icon, name }) => (
-          <button
-            key={name}
-            className={cn(
-              "w-full justify-start flex items-center gap-2 p-1.5 hover:bg-primary/40 rounded-md transition-colors",
-              activeTab === name &&
-                "bg-primary text-primary-foreground hover:bg-primary/90",
-            )}
-            onClick={() => setActiveTab(name as SettingsTab)}
-          >
-            {Icon}
-            <span className="text-sm font-semibold">{name}</span>
-          </button>
-        ))}
-      </div>
-      <Button
-        variant="ghost"
-        className="w-full text-destructive justify-start hover:bg-destructive! hover:text-destructive-foreground! transition-colors duration-300"
-      >
-        <LogOut className="size-4" />
-        Logout
-      </Button>
-    </div>
+    <Sidebar collapsible="none" className="hidden md:flex w-48">
+      <SidebarContent>
+        <SidebarGroup className="h-full">
+          <SidebarGroupContent className="h-full">
+            <SidebarMenu className="h-full">
+              {navItems.map((item) => (
+                <SettingsSidebarItem
+                  key={item.tab}
+                  tab={item.tab}
+                  Icon={item.Icon}
+                  isActive={item.tab === activeTab}
+                  onSelect={handleTabChange}
+                />
+              ))}
+              <SidebarMenuItem className="mt-auto">
+                <SidebarMenuButton onClick={() => {}} asChild>
+                  <Button
+                    variant="ghost"
+                    className="w-full text-destructive justify-start hover:bg-destructive! hover:text-destructive-foreground! transition-colors duration-300"
+                  >
+                    <LogOut className="size-4" />
+                    Logout
+                  </Button>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
   );
 };

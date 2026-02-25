@@ -1,10 +1,10 @@
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { useThemeColor } from "@/contexts/Theme";
+import { useThemeColor } from "@/context/Theme";
 import { ThemeColor } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 export function ThemeColorToggle() {
-  const { themeColor, setThemeColor,resolvedTheme } = useThemeColor();
+  const { themeColor, setThemeColor, resolvedTheme } = useThemeColor();
 
   const themeColors = {
     default: { dark: "oklch(0.922 0 0)", light: "oklch(0.205 0 0)" },

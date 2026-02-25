@@ -3,7 +3,7 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
 import { AuthMode } from "../types";
-import { useAuthForms } from "@/contexts/AuthForms";
+import { useAuthForms } from "@/context/AuthForms";
 
 interface AuthFormTabsProps {
   mode: AuthMode;

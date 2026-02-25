@@ -5,7 +5,7 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-export const NavSidebarHeader = () => {
+export const AppSidebarHeader = () => {
   const { open } = useSidebar();
   return (
     <SidebarHeader>
