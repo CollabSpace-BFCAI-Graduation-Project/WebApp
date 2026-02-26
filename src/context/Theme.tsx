@@ -16,10 +16,7 @@ interface ThemeProviderProps extends React.ComponentProps<
   initialThemeColor: ThemeColor;
 }
 
-const ThemeColorContext = createContext<ThemeColorContextType>({
-  themeColor: "default",
-  setThemeColor: () => {},
-});
+const ThemeColorContext = createContext<ThemeColorContextType | null>(null);
 
 export function ThemeProvider({
   initialThemeColor,

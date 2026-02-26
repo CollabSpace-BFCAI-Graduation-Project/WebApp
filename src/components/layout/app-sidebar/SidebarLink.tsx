@@ -20,7 +20,7 @@ export const SidebarLink = ({ item }: SidebarLinkProps) => {
     <SidebarMenuItem>
       <SidebarMenuButton
         asChild
-        isActive={item.url === path || item.url === path?.replace(/\/$/, "")}
+        isActive={path === item.url || path?.startsWith(`${item.url}/`)}
         className="data-[active=true]:default-theme:bg-foreground/70
                  data-[active=true]:default-theme:text-background"
       >
@@ -34,7 +34,7 @@ export const SidebarLink = ({ item }: SidebarLinkProps) => {
             }
           }}
         >
-          <item.icon />
+          {item.icon}
           <span>{item.name}</span>
         </Link>
       </SidebarMenuButton>

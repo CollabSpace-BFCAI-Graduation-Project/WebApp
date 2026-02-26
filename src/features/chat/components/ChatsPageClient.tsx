@@ -1,14 +1,15 @@
 "use client";
 
+import { HomeIcon } from "@/components/ui/home";
+import { MessageCircleMoreIcon } from "@/components/ui/message-circle-more";
 import { ChatsGrid } from "@/features/chat/components/ChatsGrid";
 import { ChatsHeader } from "@/features/chat/components/ChatsHeader";
 import { useSetBreadcrumb } from "@/hooks/useSetBreadcrumb";
-import { HouseIcon, MessageCircle } from "lucide-react";
 
 export default function ChatsPageClient() {
   useSetBreadcrumb([
-    { label: "Spaces", href: "/", icon: <HouseIcon className="size-4" /> },
-    { label: "Chat", icon: <MessageCircle className="size-4" /> },
+    { label: "Spaces", href: "/", icon: <HomeIcon size={18} /> },
+    { label: "Chat", icon: <MessageCircleMoreIcon size={18} /> },
   ]);
 
   return (

@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { FormController } from "./FormController";
 import { FieldValues, Path, Control } from "react-hook-form";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { EyeIcon } from "../ui/eye";
+import { EyeOffIcon } from "../ui/eye-off";
+
 
 interface PasswordInputProps<T extends FieldValues> {
   control: Control<T>;

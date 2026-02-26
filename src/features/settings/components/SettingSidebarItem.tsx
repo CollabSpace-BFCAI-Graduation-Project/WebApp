@@ -1,10 +1,10 @@
 import { SettingsTab } from "../types";
-import { LucideIcon } from "lucide-react";
 import { SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
+import { ReactNode } from "react";
 
 interface SettingsSidebarItemProps {
   tab: SettingsTab;
-  Icon: LucideIcon;
+  Icon: ReactNode;
   isActive: boolean;
   onSelect: (tab: SettingsTab) => void;
 }
@@ -18,7 +18,7 @@ export const SettingsSidebarItem = ({
   return (
     <SidebarMenuItem>
       <SidebarMenuButton isActive={isActive} onClick={() => onSelect(tab)}>
-        <Icon className="size-4" />
+        {Icon}
         <span>{tab}</span>
       </SidebarMenuButton>
     </SidebarMenuItem>

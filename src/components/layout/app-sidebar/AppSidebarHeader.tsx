@@ -13,7 +13,7 @@ export const AppSidebarHeader = () => {
         href="/"
         className="flex flex-row justify-center items-center gap-2 mb-6"
       >
-        <AnimatedLogo className="h-10 w-10 mb-0.5 p-2 ml-1.5" />
+        <AnimatedLogo className="h-9 w-9 mb-0.5 p-2 ml-1.5" />
         <h1
           className={cn(
             "transition-all duration-200 overflow-hidden",

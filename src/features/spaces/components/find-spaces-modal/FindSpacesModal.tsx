@@ -9,11 +9,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Globe } from "lucide-react";
 import { useState } from "react";
 import { SearchInput } from "../filters/SearchInput";
 import { FindSpaceCard } from "./FindSpaceCard";
 import { Separator } from "@/components/ui/separator";
+import { EarthIcon } from "@/components/ui/earth";
 
 export function FindSpacesModal() {
   const [open, setOpen] = useState(false);
@@ -27,13 +27,13 @@ export function FindSpacesModal() {
           hideTooltipBreakpoint="sm"
           onClick={() => setOpen(true)}
         >
-          <Globe className="w-4 h-4 mr-1 group-hover:rotate-180 transition-all duration-300" />
+          <EarthIcon className="w-4 h-4 group-hover:rotate-180 transition-all duration-300" />
           <span className="hidden sm:inline-block">Find Spaces</span>
         </TooltippedButton>
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader className="flex flex-row items-center gap-2.5">
-          <Globe className="w-8 h-8 text-primary hover:text-primary/80 transition-all duration-300" />
+        <DialogHeader className="flex flex-row items-center">
+          <EarthIcon className="w-8 h-8 text-primary hover:text-primary/80 transition-all duration-300" />
           <div className="flex flex-col gap-1 mt-1">
             <DialogTitle className="text-left">Public Spaces</DialogTitle>
             <DialogDescription className="text-left">

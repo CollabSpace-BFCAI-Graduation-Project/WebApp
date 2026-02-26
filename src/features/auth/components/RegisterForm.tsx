@@ -45,7 +45,7 @@ export function RegisterForm() {
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} id="register" noValidate>
           <FieldGroup className="gap-1.5">
-            <div className="flex flex-col xs:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <FormController
                 name="fullName"
                 label="Full Name"
@@ -71,7 +71,7 @@ export function RegisterForm() {
               control={control}
               type="email"
             />
-            <div className="flex flex-col xs:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <PasswordInput
                 control={control}
                 name="password"

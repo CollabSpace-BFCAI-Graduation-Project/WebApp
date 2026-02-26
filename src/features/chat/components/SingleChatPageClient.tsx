@@ -4,7 +4,9 @@ import { chats } from "@/lib/dummyData";
 import { ChatIdDesktopView } from "./ChatIdDesktopView";
 import { ChatIdMobileView } from "./ChatIdMobileView";
 import { useSetBreadcrumb } from "@/hooks/useSetBreadcrumb";
-import { HouseIcon, LucideMessageSquareQuote, MessageCircle, MessageSquareQuote, Send } from "lucide-react";
+import { HomeIcon } from "@/components/ui/home";
+import { MessageCircleMoreIcon } from "@/components/ui/message-circle-more";
+import { MessageSquareIcon } from "@/components/ui/message-square";
 
 interface SingleChatPageClientProps {
   chat: (typeof chats)[0];
@@ -12,13 +14,13 @@ interface SingleChatPageClientProps {
 
 export const SingleChatPageClient = ({ chat }: SingleChatPageClientProps) => {
   useSetBreadcrumb([
-    { label: "Spaces", href: "/", icon: <HouseIcon className="size-4" /> },
+    { label: "Spaces", href: "/", icon: <HomeIcon size={18} /> },
     {
       label: "Chat",
       href: "/chat",
-      icon: <MessageCircle className="size-4" />,
+      icon: <MessageSquareIcon size={18} />,
     },
-    { label: chat.name, icon: <Send className="size-4" /> },
+    { label: chat.name, icon: <MessageCircleMoreIcon size={18} /> },
   ]);
   return (
     <div className="flex flex-col md:flex-row p-6 h-screen gap-6">

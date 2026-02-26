@@ -7,11 +7,26 @@ export function ThemeColorToggle() {
   const { themeColor, setThemeColor, resolvedTheme } = useThemeColor();
 
   const themeColors = {
-    default: { dark: "oklch(0.922 0 0)", light: "oklch(0.205 0 0)" },
-    claude: { dark: "#d97757", light: "#c96442" },
-    ocean: { dark: "#34d399", light: "#22c55e" },
-    amethyst: { dark: "#a995c9", light: "#8a79ab" },
-    clymorphism: { dark: "#818cf8", light: "#6366f1" },
+    slack: {
+      dark: "oklch(0.58 0.14 327.21)",
+      light: "oklch(0.37 0.14 323.4)",
+    },
+    caffeine: {
+      dark: "oklch(0.92 0.05 67.14)",
+      light: "oklch(0.43 0.04 42.00)",
+    },
+    "ghibli-studio": {
+      dark: "oklch(0.64 0.05 114.58)",
+      light: "oklch(0.71 0.10 111.96)",
+    },
+    valorant: {
+      dark: "oklch(0.67 0.22 21.22)",
+      light: "oklch(0.67 0.22 21.22)",
+    },
+    perplexity: {
+      dark: "oklch(0.72 0.12 210.36)",
+      light: "oklch(0.72 0.12 210.36)",
+    },
   };
 
   return (

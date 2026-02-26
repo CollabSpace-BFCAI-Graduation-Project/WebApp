@@ -8,7 +8,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { LayoutDashboard } from "lucide-react";
+import { LayoutPanelTopIcon } from "@/components/ui/layout-panel-top";
 import { useCreateSpaceFormStore } from "@/store/create-space-form";
 
 export function EmptySpaces() {
@@ -17,7 +17,7 @@ export function EmptySpaces() {
     <Empty className="border border-dashed">
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <LayoutDashboard />
+          <LayoutPanelTopIcon />
         </EmptyMedia>
         <EmptyTitle>No spaces found</EmptyTitle>
         <EmptyDescription>

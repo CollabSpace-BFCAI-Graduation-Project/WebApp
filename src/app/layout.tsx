@@ -31,13 +31,14 @@ export default async function RootLayout({
   children,
 }: Readonly<RootLayoutProps>) {
   const cookieStore = await cookies();
-  const themeColor = cookieStore.get("themeColor")?.value || "ocean";
+  const themeColor: ThemeColor =
+    (cookieStore.get("themeColor")?.value as ThemeColor) || "slack";
   return (
     <html lang="en" data-theme={themeColor} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider initialThemeColor={themeColor as ThemeColor}>
+        <ThemeProvider initialThemeColor={themeColor}>
           <NuqsAdapter>{children}</NuqsAdapter>
           <Toaster richColors />
         </ThemeProvider>

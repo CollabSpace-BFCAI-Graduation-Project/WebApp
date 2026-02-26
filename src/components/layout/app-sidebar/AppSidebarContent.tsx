@@ -7,29 +7,32 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Grid, Users, MessageSquare, Settings } from "lucide-react";
 
 import { SettingsModal } from "@/features/settings/components/SettingsModal";
 import { useSettingsModalStore } from "@/store/settings-modal";
 import { NotificationModal } from "@/features/notifications/components/NotificationModal";
 import { SidebarLink } from "./SidebarLink";
 import { SidebarLinkItem } from "@/lib/types";
+import { MessageSquareIcon } from "@/components/ui/message-square";
+import { UsersIcon } from "@/components/ui/users";
+import { SettingsIcon } from "@/components/ui/settings";
+import { GripIcon } from "@/components/ui/grip";
 
 const sidebarLinks: SidebarLinkItem[] = [
   {
     name: "Spaces",
     url: "/",
-    icon: Grid,
+    icon: <GripIcon size={18} />,
   },
   {
     name: "Chat",
     url: "/chat",
-    icon: MessageSquare,
+    icon: <MessageSquareIcon size={18} />,
   },
   {
     name: "Team",
     url: "/team",
-    icon: Users,
+    icon: <UsersIcon size={18} />,
   },
 ];
 
@@ -65,7 +68,7 @@ export const AppSidebarContent = () => {
                     setActiveTab("General");
                   }}
                 >
-                  <Settings />
+                  <SettingsIcon size={18} />
                   <span>Settings</span>
                 </button>
               </SidebarMenuButton>

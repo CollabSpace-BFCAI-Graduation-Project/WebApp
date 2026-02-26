@@ -1,15 +1,14 @@
-import { LucideIcon } from "lucide-react";
+import {  ElementType, ReactNode } from "react";
 
 export type ThemeColor =
-  | "default"
-  | "claude"
-  | "clymorphism"
-  | "amethyst"
-  | "ocean";
-
+  | "slack"
+  | "caffeine"
+  | "ghibli-studio"
+  | "valorant"
+  | "perplexity";
 
 export interface SidebarLinkItem {
   name: string;
   url: string;
-  icon: LucideIcon;
+  icon: ReactNode;
 }

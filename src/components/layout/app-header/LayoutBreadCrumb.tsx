@@ -11,10 +11,12 @@ import {
 
 import { useBreadcrumb } from "@/context/Breadcrumb";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Fragment } from "react";
 
 export const LayoutBreadCrumb = () => {
   const { items } = useBreadcrumb();
+  const pathname = usePathname();
 
   return (
     <Breadcrumb>
@@ -34,10 +36,12 @@ export const LayoutBreadCrumb = () => {
                     </Link>
                   </BreadcrumbLink>
                 ) : (
-                  <BreadcrumbPage className="flex items-center gap-1.5">
-                    {item.icon}
-                    {item.label}
-                  </BreadcrumbPage>
+                  pathname !== "/" && (
+                    <BreadcrumbPage className="flex items-center gap-1.5">
+                      {item.icon}
+                      {item.label}
+                    </BreadcrumbPage>
+                  )
                 )}
               </BreadcrumbItem>
 

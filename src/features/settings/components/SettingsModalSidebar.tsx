@@ -6,22 +6,25 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { SettingsTab } from "../types";
-import { LogOut, User, Clock, Lock, Bell, Settings } from "lucide-react";
-import { LucideIcon } from "lucide-react";
 import { SettingsSidebarItem } from "./SettingSidebarItem";
 import { useSettingsModalStore } from "@/store/settings-modal";
-import { useCallback } from "react";
+import { ReactNode, useCallback } from "react";
 import { Button } from "@/components/ui/button";
+import { UsersIcon } from "@/components/ui/users";
+import { ClockIcon } from "@/components/ui/clock";
+import { LockIcon } from "@/components/ui/lock";
+import { BellIcon } from "@/components/ui/bell";
+import { SettingsIcon } from "@/components/ui/settings";
+import { LogoutIcon } from "@/components/ui/logout";
 
-const navItems: { tab: SettingsTab; Icon: LucideIcon }[] = [
-  { tab: "Profile", Icon: User },
-  { tab: "My Requests", Icon: Clock },
-  { tab: "Privacy", Icon: Lock },
-  { tab: "Notifications", Icon: Bell },
-  { tab: "General", Icon: Settings },
+const navItems: { tab: SettingsTab; Icon: ReactNode }[] = [
+  { tab: "Profile", Icon: <UsersIcon size={18} /> },
+  { tab: "My Requests", Icon: <ClockIcon size={18} /> },
+  { tab: "Privacy", Icon: <LockIcon size={18} /> },
+  { tab: "Notifications", Icon: <BellIcon size={18} /> },
+  { tab: "General", Icon: <SettingsIcon size={18} /> },
 ];
 
 export const SettingsModalSidebar = () => {
@@ -56,7 +59,7 @@ export const SettingsModalSidebar = () => {
                     variant="ghost"
                     className="w-full text-destructive justify-start hover:bg-destructive! hover:text-destructive-foreground! transition-colors duration-300"
                   >
-                    <LogOut className="size-4" />
+                    <LogoutIcon size={18} />
                     Logout
                   </Button>
                 </SidebarMenuButton>
