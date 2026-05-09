@@ -9,7 +9,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CodeXml, Coffee, GraduationCap, Layers, Palette } from "lucide-react";
-import { useState } from "react";
+import { useCategory } from "../../hooks/useCategory";
+import { CategoryFilter } from "../../types";
 
 const CATEGORIES = {
   "all-categories": {
@@ -34,21 +35,20 @@ const CATEGORIES = {
   },
 } as const;
 
-type CategoryKey = keyof typeof CATEGORIES;
 
 export const CategorySelect = () => {
-  const [value, setValue] = useState<CategoryKey>("all-categories");
-
-  const handleValueChange = (value: string) => {
-    setValue(value as CategoryKey);
-    console.log(value);
-  };
+  const [category, setCategory] = useCategory();
 
   return (
-    <Select value={value} onValueChange={handleValueChange}>
+    <Select
+      value={category}
+      onValueChange={(value: CategoryFilter) => {
+        setCategory(value);
+      }}
+    >
       <SelectTrigger className="w-full">
         <SelectValue>
-          {CATEGORIES[value].icon} {CATEGORIES[value].label}
+          {CATEGORIES[category].icon} {CATEGORIES[category].label}
         </SelectValue>
       </SelectTrigger>
 

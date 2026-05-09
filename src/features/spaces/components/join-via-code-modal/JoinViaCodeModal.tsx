@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, Link } from "lucide-react";
+import { LinkIcon } from "@/components/ui/link";
+import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 
 export function JoinViaCodeModal() {
@@ -27,14 +28,14 @@ export function JoinViaCodeModal() {
           hideTooltipBreakpoint="sm"
           onClick={() => setOpen(true)}
         >
-          <Link className="w-4 h-4 mr-1 group-hover:rotate-180 transition-all duration-300" />
+          <LinkIcon className="w-4 h-4 mr-1" />
           <span className="hidden sm:inline-block">Join via Code</span>
         </TooltippedButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader className="space-y-5">
           <div className="w-full flex items-center justify-center">
-            <Link className="w-8 h-8 text-primary hover:text-primary/80 transition-all duration-300" />
+            <LinkIcon className="w-8 h-8 text-primary hover:text-primary/80 transition-all duration-300" />
           </div>
           <div className="flex flex-col gap-2">
             <DialogTitle className="text-center">Join a Space</DialogTitle>

@@ -9,7 +9,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Activity, GlobeX, Wifi } from "lucide-react";
-import { useState } from "react";
+import { useStatus } from "../../hooks/useStatus";
+import { StatusFilter } from "../../types";
 
 const STATUSES = {
   "any-status": {
@@ -26,21 +27,19 @@ const STATUSES = {
   },
 } as const;
 
-type StatusKey = keyof typeof STATUSES;
-
 export const StatusSelect = () => {
-  const [value, setValue] = useState<StatusKey>("any-status");
-
-  const handleValueChange = (value: string) => {
-    setValue(value as StatusKey);
-    console.log(value);
-  };
+  const [status, setStatus] = useStatus();
 
   return (
-    <Select value={value} onValueChange={handleValueChange}>
+    <Select
+      value={status}
+      onValueChange={(value: StatusFilter) => {
+        setStatus(value);
+      }}
+    >
       <SelectTrigger className="w-full">
         <SelectValue>
-          {STATUSES[value].icon} {STATUSES[value].label}
+          {STATUSES[status].icon} {STATUSES[status].label}
         </SelectValue>
       </SelectTrigger>
 

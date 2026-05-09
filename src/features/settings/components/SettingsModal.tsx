@@ -1,51 +1,50 @@
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { Settings } from "lucide-react";
-import { SettingsModalSidebar } from "./SettingsModalSidebar";
-import { useState } from "react";
-import { SettingsTab } from "@/lib/types";
+"use client";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
+import { useSettingsModalStore } from "@/store/settings-modal";
 import { ProfileSettings } from "./profile-settings/ProfileSettings";
 import { RequestsSettings } from "./requests-settings/RequestsSettings";
+import { PrivacySettings } from "./privacy-settings/PrivacySettings";
+import { NotificationsSettings } from "./notifications-settings/NotificationsSettings";
+import { GeneralSettings } from "./general-settings/GeneralSettings";
+import { SettingsModalSidebar } from "./SettingsModalSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { SettingsModalHeader } from "./SettingsModalHeader";
 
-const settingsContent: {
-  [key in SettingsTab]: React.ReactNode;
-} = {
-  Profile: <ProfileSettings />,
-  "My Requests": <RequestsSettings />,
-  Privacy: <div>Privacy Settings Content</div>,
-  Notifications: <div>Notifications Settings Content</div>,
-  General: <div>General Settings Content</div>,
-};
+const views = [
+  { tab: "Profile", content: <ProfileSettings /> },
+  { tab: "My Requests", content: <RequestsSettings /> },
+  { tab: "Privacy", content: <PrivacySettings /> },
+  { tab: "Notifications", content: <NotificationsSettings /> },
+  { tab: "General", content: <GeneralSettings /> },
+];
 
-export const SettingsModal = () => {
-  const [activeTab, setActiveTab] = useState<SettingsTab>("Profile");
+export function SettingsModal() {
+  const open = useSettingsModalStore((state) => state.isOpen);
+  const setIsOpen = useSettingsModalStore((state) => state.setIsOpen);
+  const activeTab = useSettingsModalStore((state) => state.activeTab);
+
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <SidebarMenuItem>
-          <SidebarMenuButton
-            asChild
-            className="
-                  data-[active=true]:default-theme:bg-foreground/70
-                  data-[active=true]:default-theme:text-background"
-          >
-            <button>
-              <Settings />
-              <span>Settings</span>
-            </button>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      </DialogTrigger>
-      <DialogContent className="max-w-3xl! p-0 overflow-hidden h-[600px] flex">
-        {/* Sidebar */}
-        <SettingsModalSidebar
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
-
-        {/* Content */}
-        <div className="flex-1">{settingsContent[activeTab]}</div>
+    <Dialog open={open} onOpenChange={setIsOpen}>
+      <DialogContent className="overflow-hidden p-0 md:max-h-[500px] md:max-w-[700px] lg:max-w-[800px]">
+        <DialogTitle className="sr-only">Settings</DialogTitle>
+        <DialogDescription className="sr-only">
+          Customize your settings here.
+        </DialogDescription>
+        <SidebarProvider className="items-start min-h-auto">
+          <SettingsModalSidebar />
+          <main className="flex h-[480px] flex-1 flex-col overflow-hidden">
+            <SettingsModalHeader />
+            {views.find((view) => view.tab === activeTab)?.content}
+          </main>
+        </SidebarProvider>
       </DialogContent>
     </Dialog>
   );
-};
+}

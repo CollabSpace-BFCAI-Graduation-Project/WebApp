@@ -15,7 +15,7 @@ import {
 import CopyToClipboardButton from "@/components/shared/CopyToClipboardButton";
 import InviteFriendButton from "@/components/shared/InviteFriendButton";
 import { useState } from "react";
-import { useCreateSpaceFormStore } from "@/store/create-space-form.store";
+import { useCreateSpaceFormStore } from "@/store/create-space-form";
 import { useFormContext } from "react-hook-form";
 import { CreateSpaceFormValues } from "../../schemas";
 

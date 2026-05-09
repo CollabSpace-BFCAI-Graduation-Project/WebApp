@@ -11,7 +11,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import { useCreateSpaceFormStore } from "@/store/create-space-form.store";
+import { useCreateSpaceFormStore } from "@/store/create-space-form";
 import Image from "next/image";
 import { Controller, useFormContext } from "react-hook-form";
 import { CreateSpaceFormValues } from "../../schemas";

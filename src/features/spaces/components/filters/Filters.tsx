@@ -5,12 +5,9 @@ import { StatusSelect } from "./StatusSelect";
 import { SortSelect } from "./SortSelect";
 import { LayoutTabs } from "./LayoutTabs";
 import { SearchInput } from "./SearchInput";
-import { useState } from "react";
 import { FilterTabs } from "./FilterTabs";
-import { SpacesLayout } from "../../types";
 
 export const Filters = () => {
-  const [layout, setLayout] = useState<SpacesLayout>("grid");
   return (
     <div className="border border-double p-2 rounded-xl flex flex-col xl:flex-row gap-4">
       <FilterTabs className="w-full sm:w-2/3 m-auto xl:m-0 xl:w-auto xl:mr-auto" />
@@ -20,11 +17,7 @@ export const Filters = () => {
         <SortSelect />
         <SearchInput wrapperClassName="w-full lg:min-w-[200px]" />
       </div>
-      <LayoutTabs
-        layout={layout}
-        setLayout={setLayout}
-        className="w-full items-center xl:m-0 xl:w-auto"
-      />
+      <LayoutTabs className="w-full items-center xl:m-0 xl:w-auto" />
     </div>
   );
 };

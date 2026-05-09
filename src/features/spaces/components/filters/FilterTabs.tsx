@@ -1,22 +1,23 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 import { FilterTab } from "../../types";
+import { useTab } from "../../hooks/useTab";
 
 export function FilterTabs({ className }: { className?: string }) {
-  const [value, setValue] = useState<FilterTab>("all");
-  const handleValueChange = (value: string) => {
-    setValue(value as FilterTab);
-    console.log(value);
-  };
+  const [tab, setTab] = useTab();
+
   return (
-    <Tabs value={value} onValueChange={handleValueChange} className={className}>
+    <Tabs
+      value={tab}
+      onValueChange={(value) => setTab(value as FilterTab)}
+      className={className}
+    >
       <TabsList className="w-full">
         <TabsTrigger
           value="all"
           className={cn(
             "transition-all duration-500 ease-in-out",
-            value === "all" && "bg-primary! text-primary-foreground!",
+            tab === "all" && "bg-primary! text-primary-foreground!",
           )}
         >
           All
@@ -25,7 +26,7 @@ export function FilterTabs({ className }: { className?: string }) {
           value="favorites"
           className={cn(
             "transition-all duration-500 ease-in-out",
-            value === "favorites" && "bg-primary! text-primary-foreground!",
+            tab === "favorites" && "bg-primary! text-primary-foreground!",
           )}
         >
           Favorites
@@ -34,7 +35,7 @@ export function FilterTabs({ className }: { className?: string }) {
           value="owned"
           className={cn(
             "transition-all duration-500 ease-in-out",
-            value === "owned" && "bg-primary! text-primary-foreground!",
+            tab === "owned" && "bg-primary! text-primary-foreground!",
           )}
         >
           Owned

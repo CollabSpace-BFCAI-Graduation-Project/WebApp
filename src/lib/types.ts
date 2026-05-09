@@ -1,13 +1,14 @@
-export type ThemeColor =
-  | "default"
-  | "claude"
-  | "clymorphism"
-  | "amethyst"
-  | "ocean";
+import {  ElementType, ReactNode } from "react";
 
-export type SettingsTab =
-  | "Profile"
-  | "My Requests"
-  | "Privacy"
-  | "Notifications"
-  | "General";
+export type ThemeColor =
+  | "slack"
+  | "caffeine"
+  | "ghibli-studio"
+  | "valorant"
+  | "perplexity";
+
+export interface SidebarLinkItem {
+  name: string;
+  url: string;
+  icon: ReactNode;
+}

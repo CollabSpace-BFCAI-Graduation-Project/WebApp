@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/contexts/Theme";
+import { ThemeProvider } from "@/context/Theme";
 import { Toaster } from "@/components/ui/sonner";
-import { ThemeColorProvider } from "@/contexts/ThemeColor";
 import { cookies } from "next/headers";
 import { ThemeColor } from "@/lib/types";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,17 +31,16 @@ export default async function RootLayout({
   children,
 }: Readonly<RootLayoutProps>) {
   const cookieStore = await cookies();
-  const themeColor = cookieStore.get("themeColor")?.value || "default";
+  const themeColor: ThemeColor =
+    (cookieStore.get("themeColor")?.value as ThemeColor) || "slack";
   return (
     <html lang="en" data-theme={themeColor} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider>
-          <ThemeColorProvider initialThemeColor={themeColor as ThemeColor}>
-            <main>{children}</main>
-          </ThemeColorProvider>
-          <Toaster />
+        <ThemeProvider initialThemeColor={themeColor}>
+          <NuqsAdapter>{children}</NuqsAdapter>
+          <Toaster richColors />
         </ThemeProvider>
       </body>
     </html>

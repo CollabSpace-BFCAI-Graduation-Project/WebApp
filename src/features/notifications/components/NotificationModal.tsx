@@ -1,3 +1,4 @@
+import { BellIcon } from "@/components/ui/bell";
 import {
   Sheet,
   SheetContent,
@@ -7,7 +8,6 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { Bell } from "lucide-react";
 
 export function NotificationModal() {
   return (
@@ -21,7 +21,7 @@ export function NotificationModal() {
                   data-[active=true]:default-theme:text-background"
           >
             <button>
-              <Bell />
+              <BellIcon size={18} />
               <span>Notifications</span>
             </button>
           </SidebarMenuButton>
@@ -30,7 +30,7 @@ export function NotificationModal() {
       <SheetContent showCloseButton={false} className="flex flex-col">
         <SheetHeader className="bg-primary/50">
           <SheetTitle className="flex items-center gap-2">
-            <Bell /> <span className="text-lg font-bold">Notifications</span>
+            <BellIcon size={18} /> <span className="text-lg font-bold">Notifications</span>
           </SheetTitle>
           <SheetDescription className="hidden">
             All notifications
