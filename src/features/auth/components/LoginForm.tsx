@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "motion/react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -8,13 +9,15 @@ import { ArrowRight } from "lucide-react";
 import { FieldGroup } from "@/components/ui/field";
 import { FormController } from "@/components/shared/FormController";
 import Link from "next/link";
-import { SeparatorWithText } from "@/components/shared/separatorWithText";
 import { PasswordInput } from "@/components/shared/PasswordInput";
-import { GoogleIcon } from "@/components/shared/GoogleIcon";
 import { useFormState } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { LoginFormData } from "../schemas";
 import { useAuthForms } from "@/context/AuthForms";
+import { login } from "../services";
+import { useAuthStore } from "@/store/auth-store";
+import { fadeInUp } from "@/lib/animations";
+import { useMounted } from "@/hooks/useMounted";
 
 export function LoginForm() {
   const {
@@ -23,22 +26,21 @@ export function LoginForm() {
   } = useAuthForms();
   const { isSubmitting } = useFormState({ control });
   const router = useRouter();
-
-  const login = async (data: LoginFormData) => {
-    return new Promise<void>((resolve) => {
-      setTimeout(() => {
-        resolve();
-        console.log(data);
-      }, 2000);
-    });
-  };
+  const setAuth = useAuthStore((state) => state.setAuth);
+  const mounted = useMounted();
 
   async function onSubmit(data: LoginFormData) {
-    console.log("Login form submitted:", data);
-    await login(data);
-    toast.success("Logged in successfully!");
-    resetAuthForms();
-    router.replace("/");
+    try {
+      const session = await login(data);
+      setAuth(session.user, session.token, session.refreshToken);
+      toast.success("Logged in successfully!");
+      resetAuthForms();
+      router.replace(getSafeReturnTo(getReturnToParam()));
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Unable to log in right now.",
+      );
+    }
   }
 
   return (
@@ -49,7 +51,7 @@ export function LoginForm() {
             <FormController
               name="email"
               label="Email Address"
-              placeholder="pK9b0@example.com"
+              placeholder="Email address"
               control={control}
               type="email"
               autoComplete="email"
@@ -63,36 +65,73 @@ export function LoginForm() {
           </FieldGroup>
         </form>
       </CardContent>
-      <CardFooter className="flex flex-col">
-        {/* login button */}
-        <Button
-          type="submit"
-          form="login"
-          className="w-full cursor-pointer"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Logging in..." : "Log in"}
-          {!isSubmitting && <ArrowRight className="ml-1" />}
-        </Button>
-        <SeparatorWithText>or</SeparatorWithText>
-        {/* sign in with google */}
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full cursor-pointer"
-          onClick={() => {}}
-        >
-          <GoogleIcon />
-          <span>Continue with Google</span>
-        </Button>
-        {/* Auth form switcher */}
-        <p className="text-sm text-muted-foreground space-x-1 mt-2">
-          <span>Don&apos;t have an account?</span>
-          <Link href="/register" className="font-semibold hover:underline">
-            Sign up
-          </Link>
-        </p>
+      <CardFooter className="flex flex-col gap-4">
+        {mounted ? (
+          <>
+            <motion.div
+              initial={fadeInUp.initial}
+              animate={fadeInUp.animate}
+              transition={fadeInUp.transition}
+            >
+              <Button
+                type="submit"
+                form="login"
+                className="w-full cursor-pointer"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Logging in..." : "Log in"}
+                {!isSubmitting && <ArrowRight className="ml-1" />}
+              </Button>
+            </motion.div>
+            <motion.div
+              initial={fadeInUp.initial}
+              animate={fadeInUp.animate}
+              transition={{ ...fadeInUp.transition, delay: 0.1 }}
+            >
+              <p className="text-sm text-muted-foreground space-x-1 mt-2">
+                <span>Don&apos;t have an account?</span>
+                <Link href="/register" className="font-semibold hover:underline">
+                  Sign up
+                </Link>
+              </p>
+            </motion.div>
+          </>
+        ) : (
+          <>
+            <Button
+              type="submit"
+              form="login"
+              className="w-full cursor-pointer"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Logging in..." : "Log in"}
+              {!isSubmitting && <ArrowRight className="ml-1" />}
+            </Button>
+            <p className="text-sm text-muted-foreground space-x-1 mt-2">
+              <span>Don&apos;t have an account?</span>
+              <Link href="/register" className="font-semibold hover:underline">
+                Sign up
+              </Link>
+            </p>
+          </>
+        )}
       </CardFooter>
     </Card>
   );
+}
+
+function getReturnToParam() {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  return new URLSearchParams(window.location.search).get("returnTo");
+}
+
+function getSafeReturnTo(returnTo: string | null) {
+  if (!returnTo?.startsWith("/") || returnTo.startsWith("//")) {
+    return "/";
+  }
+
+  return returnTo;
 }

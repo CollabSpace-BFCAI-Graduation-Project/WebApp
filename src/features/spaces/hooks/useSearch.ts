@@ -1,5 +1,5 @@
-import { useQueryState } from "nuqs";
+import { useQueryState, parseAsString } from "nuqs";
 
 export const useSearch = () => {
-  return useQueryState("search", { defaultValue: "" });
+  return useQueryState("search", parseAsString.withDefault(""));
 };

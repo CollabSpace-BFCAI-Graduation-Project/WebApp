@@ -47,22 +47,23 @@ export const NewChannelInput = ({
   return (
     <div
       className={cn(
-        "flex items-center justify-between p-3 rounded-lg border-primary border",
+        "flex min-w-0 items-center gap-2 rounded-lg border border-primary p-3",
         className,
       )}
     >
-      <div className="flex gap-2 items-center">
-        <span>#</span>
+      <div className="flex min-w-0 flex-1 items-center gap-2">
+        <span className="shrink-0">#</span>
         <input
           ref={newChannelInputRef}
           value={value}
           onChange={handleNewChannelInputChange}
           onKeyDown={handleNewChannelInputChange}
           placeholder="channel-name"
-          className="border-none outline-0 w-full"
+          dir="auto"
+          className="min-w-0 flex-1 border-none bg-transparent outline-0"
         />
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex shrink-0 items-center gap-2">
         <Check
           className="size-5 text-green-500 hover:text-green-400 rounded p-0.5 transition duration-300 cursor-pointer"
           onClick={handleSubmit}

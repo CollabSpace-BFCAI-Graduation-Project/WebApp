@@ -1,26 +1,22 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/context/Theme";
 import { Toaster } from "@/components/ui/sonner";
 import { cookies } from "next/headers";
-import { ThemeColor } from "@/lib/types";
+import { ThemeColor } from "@/lib/types/types";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { QueryProvider } from "@/context/QueryProvider";
+import { Geist_Mono, Inter } from "next/font/google";
+import { cn } from "@/lib/utils";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+const interHeading = Inter({subsets:['latin'],variable:'--font-heading'});
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const geistMono = Geist_Mono({subsets:['latin'],variable:'--font-mono'});
 
 export const metadata: Metadata = {
-  title: "Collab Space",
+  title: "CollabSpace",
   description:
-    "Collab Space is a new way to work together with your team in a productive and fun way.",
+    "CollabSpace is a new way to work together with your team in a productive and fun way.",
 };
 
 interface RootLayoutProps {
@@ -32,14 +28,19 @@ export default async function RootLayout({
 }: Readonly<RootLayoutProps>) {
   const cookieStore = await cookies();
   const themeColor: ThemeColor =
-    (cookieStore.get("themeColor")?.value as ThemeColor) || "slack";
+    (cookieStore.get("themeColor")?.value as ThemeColor) || "orange";
+
   return (
-    <html lang="en" data-theme={themeColor} suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html
+      lang="en"
+      data-theme={themeColor}
+      suppressHydrationWarning className={cn("font-mono", geistMono.variable, interHeading.variable)}
+    >
+      <body className={`antialiased`}>
         <ThemeProvider initialThemeColor={themeColor}>
-          <NuqsAdapter>{children}</NuqsAdapter>
+          <QueryProvider>
+            <NuqsAdapter>{children}</NuqsAdapter>
+          </QueryProvider>
           <Toaster richColors />
         </ThemeProvider>
       </body>

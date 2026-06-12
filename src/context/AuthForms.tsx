@@ -17,12 +17,7 @@ interface AuthFormsContextType {
   clearAuthFormsErrors: () => void;
 }
 
-const AuthFormsContext = createContext<AuthFormsContextType>({
-  registerForm: {} as UseFormReturn<RegisterFormData>,
-  loginForm: {} as UseFormReturn<LoginFormData>,
-  resetAuthForms: () => {},
-  clearAuthFormsErrors: () => {},
-});
+const AuthFormsContext = createContext<AuthFormsContextType | null>(null);
 
 export const AuthFormsProvider = ({
   children,
@@ -31,7 +26,7 @@ export const AuthFormsProvider = ({
 }) => {
   const loginForm = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
-    mode: "onBlur",
+    mode: "onChange",
     defaultValues: {
       email: "",
       password: "",
@@ -39,7 +34,7 @@ export const AuthFormsProvider = ({
   });
   const registerForm = useForm<RegisterFormData>({
     resolver: zodResolver(registerFormSchema),
-    mode: "onBlur",
+    mode: "onChange",
     defaultValues: {
       fullName: "",
       username: "",

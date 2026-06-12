@@ -48,8 +48,8 @@ export const SortSelect = () => {
   return (
     <Select
       value={sort}
-      onValueChange={(value: SortFilter) => {
-        setSort(value);
+      onValueChange={(value) => {
+        if (value) setSort(value as SortFilter);
       }}
     >
       <SelectTrigger className="w-full">

@@ -42,8 +42,8 @@ export const CategorySelect = () => {
   return (
     <Select
       value={category}
-      onValueChange={(value: CategoryFilter) => {
-        setCategory(value);
+      onValueChange={(value) => {
+        if (value) setCategory(value as CategoryFilter);
       }}
     >
       <SelectTrigger className="w-full">

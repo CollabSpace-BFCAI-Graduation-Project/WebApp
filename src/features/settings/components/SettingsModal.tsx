@@ -11,7 +11,6 @@ import { useSettingsModalStore } from "@/store/settings-modal";
 import { ProfileSettings } from "./profile-settings/ProfileSettings";
 import { RequestsSettings } from "./requests-settings/RequestsSettings";
 import { PrivacySettings } from "./privacy-settings/PrivacySettings";
-import { NotificationsSettings } from "./notifications-settings/NotificationsSettings";
 import { GeneralSettings } from "./general-settings/GeneralSettings";
 import { SettingsModalSidebar } from "./SettingsModalSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -21,7 +20,6 @@ const views = [
   { tab: "Profile", content: <ProfileSettings /> },
   { tab: "My Requests", content: <RequestsSettings /> },
   { tab: "Privacy", content: <PrivacySettings /> },
-  { tab: "Notifications", content: <NotificationsSettings /> },
   { tab: "General", content: <GeneralSettings /> },
 ];
 

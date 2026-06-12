@@ -10,11 +10,14 @@ import {
   FieldError,
   FieldGroup,
   FieldLabel,
+  FieldDescription,
+  FieldTitle,
 } from "@/components/ui/field";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useCreateSpaceFormStore } from "@/store/create-space-form";
-import Image from "next/image";
 import { Controller, useFormContext } from "react-hook-form";
 import { CreateSpaceFormValues } from "../../schemas";
+import { CreateSpaceIllustration } from "./CreateSpaceIllustration";
 import {
   InputGroup,
   InputGroupAddon,
@@ -32,7 +35,7 @@ export const CreateSpaceStepOne = () => {
         <DialogHeader>
           <Badge className="mb-4">Step 1/3</Badge>
           <div className="flex flex-col gap-2">
-            <DialogTitle>{"Let's build your dream space! 🚀"}</DialogTitle>
+            <DialogTitle>{"Let's build your dream space!"}</DialogTitle>
             <DialogDescription>
               Give it a cool name to get started.
             </DialogDescription>
@@ -96,20 +99,53 @@ export const CreateSpaceStepOne = () => {
                 </Field>
               )}
             />
+            <Controller
+              name="privacy"
+              control={form.control}
+              render={({ field }) => (
+                <Field>
+                  <FieldLabel>Visibility</FieldLabel>
+                  <RadioGroup
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    className="grid gap-2 sm:grid-cols-2"
+                  >
+                    <FieldLabel htmlFor="space-private">
+                      <Field orientation="horizontal" className="rounded-md border p-3">
+                        <RadioGroupItem value="Private" id="space-private" />
+                        <div className="flex flex-col gap-1">
+                          <FieldTitle>Private</FieldTitle>
+                          <FieldDescription>
+                            Only invited members can join.
+                          </FieldDescription>
+                        </div>
+                      </Field>
+                    </FieldLabel>
+                    <FieldLabel htmlFor="space-public">
+                      <Field orientation="horizontal" className="rounded-md border p-3">
+                        <RadioGroupItem value="Public" id="space-public" />
+                        <div className="flex flex-col gap-1">
+                          <FieldTitle>Public</FieldTitle>
+                          <FieldDescription>
+                            Visible to members with access to public discovery.
+                          </FieldDescription>
+                        </div>
+                      </Field>
+                    </FieldLabel>
+                  </RadioGroup>
+                </Field>
+              )}
+            />
           </FieldGroup>
           <Field orientation="responsive" className="mt-4">
             <Button type="submit">Next Step</Button>
           </Field>
         </form>
       </div>
-      <div className="hidden md:block mt-8 ml-4 relative w-1/2 rounded-lg overflow-hidden">
-        <Image
-          src="/create-space.jpg "
-          alt="Create Space"
-          fill
-          sizes="fill"
-          className="hover:scale-105 hover:-rotate-2 transition-transform duration-500"
-        />
+      <div className="hidden md:block mt-8 ml-4 relative w-1/2 rounded-lg overflow-hidden bg-linear-to-br from-card/30 to-muted/20 border border-border/50 shadow-inner">
+        <div className="absolute inset-0 flex items-center justify-center p-6">
+          <CreateSpaceIllustration className="w-full h-full object-contain" />
+        </div>
       </div>
     </>
   );

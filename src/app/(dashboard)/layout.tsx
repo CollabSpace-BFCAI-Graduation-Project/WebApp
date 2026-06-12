@@ -1,9 +1,9 @@
-import { LayoutHeader } from "@/components/layout/app-header/LayoutHeader";
 import { AppSidebar } from "@/components/layout/app-sidebar/AppSidebar";
-
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { NavSidebarTrigger } from "@/components/layout/app-sidebar/AppSidebarTrigger";
+import { DashboardAuthGuard } from "@/components/shared/DashboardAuthGuard";
+import { PageMotion } from "@/components/shared/PageMotion";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { cookies } from "next/headers";
-import { BreadcrumbProvider } from "@/context/Breadcrumb";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -16,14 +16,16 @@ export default async function DashboardLayout({
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
 
   return (
-    <SidebarProvider defaultOpen={defaultOpen}>
-      <BreadcrumbProvider>
+    <DashboardAuthGuard>
+      <SidebarProvider defaultOpen={defaultOpen}>
         <AppSidebar />
-        <SidebarInset>
-          <LayoutHeader />
-          <div className="flex-1 px-4">{children}</div>
-        </SidebarInset>
-      </BreadcrumbProvider>
-    </SidebarProvider>
+        <PageMotion className="flex-1 px-4">
+          <div className="flex items-center py-2 md:hidden">
+            <NavSidebarTrigger />
+          </div>
+          {children}
+        </PageMotion>
+      </SidebarProvider>
+    </DashboardAuthGuard>
   );
 }

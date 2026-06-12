@@ -17,7 +17,7 @@ export const SearchInput = ({
   const [search, setSearch] = useSearch();
   return (
     <div className={cn("relative", wrapperClassName)}>
-      <Search className="absolute left-2 top-2.5 w-4 h-4 text-muted-foreground pointer-events-none" />
+      <Search className="absolute left-2 top-1.5 w-4 h-4 text-muted-foreground pointer-events-none" />
       <Input
         className={cn("pl-8", className)}
         placeholder={placeholder ?? "Search spaces..."}

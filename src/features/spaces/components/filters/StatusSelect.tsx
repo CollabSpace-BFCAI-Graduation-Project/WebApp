@@ -33,8 +33,8 @@ export const StatusSelect = () => {
   return (
     <Select
       value={status}
-      onValueChange={(value: StatusFilter) => {
-        setStatus(value);
+      onValueChange={(value) => {
+        if (value) setStatus(value as StatusFilter);
       }}
     >
       <SelectTrigger className="w-full">
