@@ -7,9 +7,17 @@ import {
 } from "@/components/ui/field";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-export function ProfileVisibilityChoiceCardS() {
+interface ProfileVisibilityChoiceCardSProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export function ProfileVisibilityChoiceCardS({
+  value,
+  onChange,
+}: ProfileVisibilityChoiceCardSProps) {
   return (
-    <RadioGroup defaultValue="public">
+    <RadioGroup value={value} onValueChange={onChange}>
       <FieldLabel htmlFor="public">
         <Field orientation="horizontal">
           <RadioGroupItem value="public" id="public" />
@@ -19,15 +27,7 @@ export function ProfileVisibilityChoiceCardS() {
           </FieldContent>
         </Field>
       </FieldLabel>
-      <FieldLabel htmlFor="members">
-        <Field orientation="horizontal">
-          <RadioGroupItem value="members" id="members" />
-          <FieldContent>
-            <FieldTitle>Members Only</FieldTitle>
-            <FieldDescription>Shared spaces only.</FieldDescription>
-          </FieldContent>
-        </Field>
-      </FieldLabel>
+
       <FieldLabel htmlFor="private">
         <Field orientation="horizontal">
           <RadioGroupItem value="private" id="private" />

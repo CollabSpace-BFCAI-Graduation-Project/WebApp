@@ -1,22 +1,24 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { motion } from "motion/react";
 import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
 import { SettingsModal } from "@/features/settings/components/SettingsModal";
 import { useSettingsModalStore } from "@/store/settings-modal";
 import { NotificationModal } from "@/features/notifications/components/NotificationModal";
 import { SidebarLink } from "./SidebarLink";
-import { SidebarLinkItem } from "@/lib/types";
+import { SidebarLinkItem } from "@/lib/types/types";
 import { MessageSquareIcon } from "@/components/ui/message-square";
 import { UsersIcon } from "@/components/ui/users";
 import { SettingsIcon } from "@/components/ui/settings";
 import { GripIcon } from "@/components/ui/grip";
+import { sidebarItemVariants, staggerContainer } from "@/lib/animations";
 
 const sidebarLinks: SidebarLinkItem[] = [
   {
@@ -45,9 +47,17 @@ export const AppSidebarContent = () => {
       <SidebarGroup>
         <SidebarGroupContent>
           <SidebarMenu>
-            {sidebarLinks.map((item) => (
-              <SidebarLink key={item.url} item={item} />
-            ))}
+
+            <motion.ul
+              variants={staggerContainer}
+              initial="initial"
+              animate="animate"
+              className="flex flex-col gap-px"
+            >
+              {sidebarLinks.map((item, index) => (
+                <SidebarLink key={item.url} item={item} />
+              ))}
+            </motion.ul>
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>
@@ -55,24 +65,25 @@ export const AppSidebarContent = () => {
         <SidebarGroupContent>
           <SidebarMenu>
             <NotificationModal />
-            <SidebarMenuItem>
+            <motion.li
+              initial={sidebarItemVariants.initial as any}
+              animate={sidebarItemVariants.animate as any}
+              exit={sidebarItemVariants.exit as any}
+              transition={sidebarItemVariants.transition as any}
+            >
               <SidebarMenuButton
-                asChild
                 className="
                 data-[active=true]:default-theme:bg-foreground/70
                 data-[active=true]:default-theme:text-background"
+                onClick={() => {
+                  setIsOpen(true);
+                  setActiveTab("General");
+                }}
               >
-                <button
-                  onClick={() => {
-                    setIsOpen(true);
-                    setActiveTab("General");
-                  }}
-                >
-                  <SettingsIcon size={18} />
-                  <span>Settings</span>
-                </button>
+                <SettingsIcon size={18} />
+                <span className="group-data-[collapsible=icon]:hidden">Settings</span>
               </SidebarMenuButton>
-            </SidebarMenuItem>
+            </motion.li>
             <SettingsModal />
           </SidebarMenu>
         </SidebarGroupContent>

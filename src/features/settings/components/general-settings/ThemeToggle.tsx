@@ -5,12 +5,11 @@ export function ThemeToggle() {
   const { theme, setTheme } = useThemeColor();
   return (
     <ToggleGroup
-      type="single"
       size="sm"
       variant="outline"
       spacing={2}
-      value={theme}
-      onValueChange={(value) => value && setTheme(value)}
+      value={theme ? [theme] : []}
+      onValueChange={(value) => value && setTheme(value[0])}
     >
       <ToggleGroupItem value="system" aria-label="Toggle system">
         System

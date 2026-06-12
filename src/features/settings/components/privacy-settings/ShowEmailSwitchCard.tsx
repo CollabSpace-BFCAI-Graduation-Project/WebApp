@@ -7,7 +7,15 @@ import {
 } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
 
-export function ShowEmailSwitchCard() {
+interface ShowEmailSwitchCardProps {
+  checked: boolean;
+  onCheckedChange: (checked: boolean) => void;
+}
+
+export function ShowEmailSwitchCard({
+  checked,
+  onCheckedChange,
+}: ShowEmailSwitchCardProps) {
   return (
     <FieldLabel htmlFor="switch-show-email">
       <Field orientation="horizontal">
@@ -15,7 +23,11 @@ export function ShowEmailSwitchCard() {
           <FieldTitle>Show Email</FieldTitle>
           <FieldDescription>Display email on profile.</FieldDescription>
         </FieldContent>
-        <Switch id="switch-show-email" />
+        <Switch
+          id="switch-show-email"
+          checked={checked}
+          onCheckedChange={onCheckedChange}
+        />
       </Field>
     </FieldLabel>
   );

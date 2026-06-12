@@ -1,9 +1,8 @@
 "use client";
 
 import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
-import { createContext, useContext, useState } from "react";
-import { ThemeColor } from "@/lib/types";
-import { useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { ThemeColor } from "@/lib/types/types";
 
 interface ThemeColorContextType {
   themeColor: ThemeColor;
@@ -48,7 +47,7 @@ export function ThemeProvider({
 export const useThemeColor = () => {
   const themeColorContext = useContext(ThemeColorContext);
   const themeContext = useTheme();
-  if (!themeColorContext || !themeContext) {
+  if (!themeColorContext) {
     throw new Error("useThemeColor must be used within a ThemeProvider");
   }
   return { ...themeContext, ...themeColorContext };

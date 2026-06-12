@@ -9,38 +9,88 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { chats } from "@/lib/dummyData";
-import { useChannelStore } from "@/store/channels";
+import type { Space } from "@/lib/types/api-types";
 import { Plus } from "lucide-react";
 import { NewChannelInput } from "./NewChannelInput";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChannelChatWindow } from "./ChannelChatWindow";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createSpaceChannel, getSpaceChannels } from "@/features/spaces/services";
+import { toast } from "sonner";
+import { useActiveChannel } from "../hooks/useActiveChannel";
 
 interface ChatIdMobileViewProps {
-  chat: (typeof chats)[0];
+  space: Space;
+  spaceId: string;
 }
 
-export const ChatIdMobileView = ({ chat }: ChatIdMobileViewProps) => {
-  const { channels, addChannel } = useChannelStore();
+const uuidPattern =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+export const ChatIdMobileView = ({ space, spaceId }: ChatIdMobileViewProps) => {
+  const queryClient = useQueryClient();
+  const [activeChannel, setActiveChannel] = useActiveChannel("");
   const [isCreating, setIsCreating] = useState(false);
+  const canLoadChannels = uuidPattern.test(spaceId);
+  const { data, error } = useQuery({
+    queryKey: ["spaces", spaceId, "channels"],
+    queryFn: () => getSpaceChannels(spaceId),
+    enabled: canLoadChannels,
+  });
+  const channels = useMemo(() => data?.data ?? [], [data?.data]);
+  const selectedChannel = channels.find((channel) => channel.id === activeChannel) ?? channels[0];
+  const createMutation = useMutation({
+    mutationFn: (name: string) =>
+      createSpaceChannel(spaceId, { name, description: null }),
+    onSuccess: async (channel) => {
+      setIsCreating(false);
+      await queryClient.invalidateQueries({
+        queryKey: ["spaces", spaceId, "channels"],
+      });
+      void setActiveChannel(channel.id);
+    },
+    onError: (createError) => {
+      toast.error(
+        createError instanceof Error
+          ? createError.message
+          : "Unable to create channel.",
+      );
+    },
+  });
+
+  useEffect(() => {
+    if (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Unable to load channels.",
+      );
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (!activeChannel && channels[0]?.id) {
+      void setActiveChannel(channels[0].id);
+    }
+  }, [activeChannel, channels, setActiveChannel]);
 
   const handleCreateChannel = (name: string) => {
-    setIsCreating(false);
-    addChannel(name);
+    createMutation.mutate(name);
   };
   return (
     <div className="flex flex-col gap-3 w-full h-full md:hidden">
       <div className="flex flex-col gap-3">
-        <h1 className="font-bold pl-2 text-lg">{chat.name}</h1>
-        <Select>
+        <h1 className="font-bold pl-2 text-lg">{space.name}</h1>
+        <Select
+          value={activeChannel ?? undefined}
+          onValueChange={(value) => void setActiveChannel(value)}
+        >
           <SelectTrigger className="w-full py-4">
             <SelectValue placeholder="Select a channel" />
           </SelectTrigger>
-          <SelectContent position="popper">
+          <SelectContent>
             <SelectGroup>
               <SelectLabel>Channels</SelectLabel>
               {channels.map((channel) => (
-                <SelectItem key={channel.id} value={channel.name}>
+                <SelectItem key={channel.id} value={channel.id}>
                   {channel.name}
                 </SelectItem>
               ))}
@@ -65,7 +115,7 @@ export const ChatIdMobileView = ({ chat }: ChatIdMobileViewProps) => {
           </Button>
         )}
       </div>
-      <ChannelChatWindow chat={chat} />
+      <ChannelChatWindow space={space} spaceId={spaceId} channel={selectedChannel} />
     </div>
   );
 };

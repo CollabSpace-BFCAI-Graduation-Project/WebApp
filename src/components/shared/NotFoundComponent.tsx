@@ -1,5 +1,8 @@
-import { FullWidthDivider } from "@/components/ui/full-width-divider";
-import { Button } from "@/components/ui/button";
+"use client";
+
+import { motion } from "motion/react";
+import { buttonVariants } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import {
   Empty,
   EmptyContent,
@@ -9,13 +12,19 @@ import {
 } from "@/components/ui/empty";
 import { HomeIcon } from "lucide-react";
 import Link from "next/link";
+import { fadeInUp } from "@/lib/animations";
 
 export const NotFoundComponent = () => {
   return (
     <div className="flex w-full items-center justify-center overflow-hidden">
-      <div className="flex h-screen items-center border-x">
+      <motion.div
+        className="flex h-screen items-center border-x"
+        initial={fadeInUp.initial}
+        animate={fadeInUp.animate}
+        transition={fadeInUp.transition}
+      >
         <div>
-          <FullWidthDivider />
+          <Separator />
           <Empty>
             <EmptyHeader>
               <EmptyTitle className="font-black font-mono text-8xl">
@@ -27,17 +36,15 @@ export const NotFoundComponent = () => {
               </EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
-              <Button asChild className="w-1/2 mx-auto">
-                <Link href="/">
-                  <HomeIcon data-icon="inline-start" />
-                  Go Home
-                </Link>
-              </Button>
+              <Link href="/" className={buttonVariants({ className: "w-1/2 mx-auto" })}>
+                <HomeIcon data-icon="inline-start" />
+                Go Home
+              </Link>
             </EmptyContent>
           </Empty>
-          <FullWidthDivider />
+          <Separator />
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

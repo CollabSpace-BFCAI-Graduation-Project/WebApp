@@ -1,15 +1,30 @@
-import { cn } from "@/lib/utils";
-import { SparklesIcon } from "../ui/sparkles";
+"use client";
 
-export const AnimatedLogo = ({ className }: { className?: string }) => {
+import { motion } from "motion/react";
+
+export const AnimatedLogo = () => {
   return (
-    <div
-      className={cn(
-        `inline-flex items-center justify-center w-14 h-14 bg-primary rounded-2xl mb-3 transition-transform duration-300 hover:rotate-12`,
-        className,
-      )}
+    <motion.svg
+      animate={{ scale: [1, 1.05, 1] }}
+      fill="none"
+      height={48}
+      transition={{
+        duration: 3,
+        ease: "easeInOut",
+        repeat: Infinity,
+      }}
+      viewBox="0 0 48 48"
+      width={48}
+      xmlns="http://www.w3.org/2000/svg"
     >
-      <SparklesIcon />
-    </div>
+      <rect fill="hsl(var(--primary))" height={48} rx={12} width={48} />
+      <path
+        d="M16 32V16l16 16V16"
+        stroke="hsl(var(--primary-foreground))"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={3}
+      />
+    </motion.svg>
   );
 };

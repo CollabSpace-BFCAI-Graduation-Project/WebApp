@@ -13,7 +13,7 @@ export const registerFormSchema = z
       .max(25, "Username must be at most 25 characters.")
       .regex(/^[a-zA-Z0-9_-]+$/, "Only letters, numbers, underscores, and hyphens."),
 
-    email: z.email("Please enter a valid email address."),
+    email: z.string().email("Please enter a valid email address."),
 
     password: z
       .string()
@@ -36,8 +36,8 @@ export const registerFormSchema = z
 export type RegisterFormData = z.infer<typeof registerFormSchema>;
 
 export const loginFormSchema = z.object({
-  email: z.email("Please enter a valid email address."),
-  password: z.string().nonempty("Password is required."),
+  email: z.string().email("Please enter a valid email address."),
+  password: z.string().min(1, "Password is required."),
 });
 
 export type LoginFormData = z.infer<typeof loginFormSchema>;

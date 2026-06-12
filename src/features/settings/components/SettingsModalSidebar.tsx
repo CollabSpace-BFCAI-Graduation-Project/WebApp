@@ -10,12 +10,13 @@ import {
 import { SettingsTab } from "../types";
 import { SettingsSidebarItem } from "./SettingSidebarItem";
 import { useSettingsModalStore } from "@/store/settings-modal";
+import { useAuthStore } from "@/store/auth-store";
+import { useRouter } from "next/navigation";
 import { ReactNode, useCallback } from "react";
-import { Button } from "@/components/ui/button";
+import { api } from "@/lib/api-client";
 import { UsersIcon } from "@/components/ui/users";
 import { ClockIcon } from "@/components/ui/clock";
 import { LockIcon } from "@/components/ui/lock";
-import { BellIcon } from "@/components/ui/bell";
 import { SettingsIcon } from "@/components/ui/settings";
 import { LogoutIcon } from "@/components/ui/logout";
 
@@ -23,13 +24,14 @@ const navItems: { tab: SettingsTab; Icon: ReactNode }[] = [
   { tab: "Profile", Icon: <UsersIcon size={18} /> },
   { tab: "My Requests", Icon: <ClockIcon size={18} /> },
   { tab: "Privacy", Icon: <LockIcon size={18} /> },
-  { tab: "Notifications", Icon: <BellIcon size={18} /> },
   { tab: "General", Icon: <SettingsIcon size={18} /> },
 ];
 
 export const SettingsModalSidebar = () => {
   const activeTab = useSettingsModalStore((s) => s.activeTab);
   const setActiveTab = useSettingsModalStore((s) => s.setActiveTab);
+  const logout = useAuthStore((s) => s.logout);
+  const router = useRouter();
 
   const handleTabChange = useCallback(
     (tab: SettingsTab) => {
@@ -54,14 +56,22 @@ export const SettingsModalSidebar = () => {
                 />
               ))}
               <SidebarMenuItem className="mt-auto">
-                <SidebarMenuButton onClick={() => {}} asChild>
-                  <Button
-                    variant="ghost"
-                    className="w-full text-destructive justify-start hover:bg-destructive! hover:text-destructive-foreground! transition-colors duration-300"
-                  >
-                    <LogoutIcon size={18} />
-                    Logout
-                  </Button>
+                <SidebarMenuButton
+                  onClick={async () => {
+                    try {
+                      await api.post("/auth/revoke", {
+                        refreshToken: useAuthStore.getState().refreshToken,
+                      });
+                    } catch {
+                      // Silently proceed even if revoke fails
+                    }
+                    logout();
+                    router.replace("/login");
+                  }}
+                  className="w-full text-destructive justify-start hover:bg-destructive! hover:text-destructive-foreground! transition-colors duration-300"
+                >
+                  <LogoutIcon size={18} />
+                  Logout
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

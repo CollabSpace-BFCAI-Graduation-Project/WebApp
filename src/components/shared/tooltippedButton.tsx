@@ -34,16 +34,17 @@ export function TooltippedButton({
   };
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
-        {noButton ? (
-          <div className="group flex items-center justify-center" {...props}>
-            {children}
-          </div>
-        ) : (
-          <Button variant={variant} className="group" {...props}>
-            {children}
-          </Button>
-        )}
+      <TooltipTrigger
+        render={
+          noButton ? (
+            <div className="group flex items-center justify-center" />
+          ) : (
+            <Button variant={variant} className="group" />
+          )
+        }
+        {...props}
+      >
+        {children}
       </TooltipTrigger>
 
       <TooltipContent className={breakpointClass[hideTooltipBreakpoint]}>
