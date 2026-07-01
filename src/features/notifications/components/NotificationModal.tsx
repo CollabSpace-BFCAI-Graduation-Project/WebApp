@@ -21,7 +21,12 @@ import {
 } from "@/components/ui/sheet";
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { refetchUserSpaces } from "@/features/spaces/query-utils";
-import { getSpaceJoinRequests, respondToJoinRequest } from "@/features/spaces/services";
+import {
+  getSpaceChannels,
+  getSpaceJoinRequests,
+  getSpaces,
+  respondToJoinRequest,
+} from "@/features/spaces/services";
 import { useSignalR } from "@/hooks/useSignalR";
 import {
   findSpaceForChannel,
@@ -39,6 +44,7 @@ import {
   getPendingInvitesWithoutNotification,
   resolveDirectInviteId,
 } from "../invite-utils";
+import { buildMentionResolver, resolveMentionTokens } from "../mention-resolver";
 
 type Notification = import("@/lib/types/api-types").Notification;
 
@@ -92,6 +98,27 @@ export function NotificationModal() {
     refetchInterval: 30_000,
   });
   const notifications = notificationsResponse?.data ?? [];
+
+  // Build id→label maps once so notification bodies can replace `@{guid}` /
+  // `#{guid}` tokens with human-readable names ("@Youssef", "#general").
+  const { data: mentionMaps } = useQuery({
+    queryKey: ["notifications", "mention-maps"],
+    queryFn: async () => {
+      const spacesRes = await getSpaces(1, 100);
+      const spaces = spacesRes.data ?? [];
+      return buildMentionResolver(spaces, async (spaceId) => {
+        const res = await getSpaceChannels(spaceId, 1, 100);
+        return res.data ?? [];
+      });
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+  const resolveText = useCallback(
+    (text: string | null | undefined) =>
+      mentionMaps ? resolveMentionTokens(text, mentionMaps) : text ?? "",
+    [mentionMaps],
+  );
+
   const activeDirectInvites = directInvites.filter(
     (invite) => !respondedInviteIds.has(invite.id),
   );
@@ -188,12 +215,21 @@ export function NotificationModal() {
       notificationId,
       accept,
       notificationBody,
+      joinRequestId,
     }: {
       spaceId: string;
       notificationId: string;
       accept: boolean;
       notificationBody: string;
+      joinRequestId?: string | null;
     }) => {
+      // If the notification carries the join request ID directly, use it.
+      if (joinRequestId) {
+        await respondToJoinRequest(spaceId, joinRequestId, accept);
+        return { notificationId, spaceId };
+      }
+
+      // Fallback: find the pending request by matching username in the body.
       const { data } = await getSpaceJoinRequests(spaceId, 1, 100);
       const pendingRequests = data ?? [];
       const matchedRequest = pendingRequests.find(
@@ -243,55 +279,46 @@ export function NotificationModal() {
   }, [notificationsError]);
 
   const navigateByMentionTitle = useCallback(async (notification: Notification) => {
-    const parsed = parseMentionText(notification.title ?? "") ?? parseMentionText(notification.body ?? "");
-    console.log("[nav] parsed text", parsed);
+    const parsed =
+      parseMentionText(notification.title ?? "") ??
+      parseMentionText(notification.body ?? "");
     if (!parsed) return;
 
     try {
-      const { getSpaces, getSpaceChannels } = await import("@/features/spaces/services");
       const spacesRes = await getSpaces(1, 100);
-      console.log("[nav] spaces count", spacesRes.data.length);
       const space = spacesRes.data.find(
         (s) => s.name.toLowerCase() === parsed.spaceName.toLowerCase(),
       );
-      console.log("[nav] space found", space?.id, space?.name);
       if (!space) return;
 
       const channelsRes = await getSpaceChannels(space.id, 1, 100);
-      console.log("[nav] channels count", channelsRes.data?.length);
       const channel = channelsRes.data.find(
         (ch) => ch.name.toLowerCase() === parsed.channelName.toLowerCase(),
       );
-      console.log("[nav] channel found", channel?.id, channel?.name);
       if (channel) {
         router.push(`/chat/${space.id}?channel=${channel.id}`);
       } else {
         router.push(`/chat/${space.id}`);
       }
-    } catch (err) {
-      console.error("[nav] error", err);
+    } catch {
+      // Navigation is best-effort; silently ignore lookup failures.
     }
   }, [router]);
 
   const handleNotificationClick = useCallback(
     (notification: Notification) => {
-      console.log("[click] handleNotificationClick", notification.id, notification.title);
       if (!notification.isRead) {
         markReadMutation.mutate(notification.id);
       }
       const isMention = isMentionNotification(notification);
-      console.log("[click] isMentionNotification", isMention);
       if (!isMention) return;
 
       const entityId = notification.relatedEntityId;
-      const entityType = notification.relatedEntityType;
-      console.log("[click] relatedEntityId", entityId, "entityType", entityType);
+      const entityType = (notification.relatedEntityType ?? "").toLowerCase();
 
       if (entityId) {
-        const entityType = (notification.relatedEntityType ?? "").toLowerCase();
         if (entityType === "message") {
           findSpaceForMessage(entityId).then((result) => {
-            console.log("[click] findSpaceForMessage result", result);
             if (result) {
               router.push(`/chat/${result.spaceId}?channel=${result.channelId}`);
             } else {
@@ -300,7 +327,6 @@ export function NotificationModal() {
           });
         } else if (entityType === "channel") {
           findSpaceForChannel(entityId).then((spaceId) => {
-            console.log("[click] findSpaceForChannel result", spaceId);
             if (spaceId) {
               router.push(`/chat/${spaceId}?channel=${entityId}`);
             } else {
@@ -314,22 +340,22 @@ export function NotificationModal() {
         navigateByMentionTitle(notification);
       }
     },
-    [router, markReadMutation, navigateByMentionTitle, findSpaceForMessage],
+    [router, markReadMutation, navigateByMentionTitle],
   );
 
   const { on, off, connectionState } = useSignalR();
 
   const handleRealtimeNotification = useCallback(
     (notification: import("@/lib/types/api-types").Notification) => {
-      toast(notification.title, {
-        description: notification.body,
+      toast(resolveText(notification.title), {
+        description: resolveText(notification.body),
       });
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
       queryClient.invalidateQueries({
         queryKey: ["notifications", "unread-count"],
       });
     },
-    [queryClient],
+    [queryClient, resolveText],
   );
 
   useEffect(() => {
@@ -490,10 +516,10 @@ export function NotificationModal() {
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <p className="truncate text-sm font-semibold">
-                          {notification.title}
+                          {resolveText(notification.title)}
                         </p>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          {notification.body}
+                        <p className="mt-1 text-sm text-muted-foreground whitespace-pre-wrap break-words">
+                          {resolveText(notification.body)}
                         </p>
                       </div>
                       {!notification.isRead && (
@@ -552,6 +578,7 @@ export function NotificationModal() {
                               notificationId: notification.id,
                               accept: true,
                               notificationBody: notification.body,
+                              joinRequestId: null,
                             });
                           }}
                         >
@@ -569,6 +596,7 @@ export function NotificationModal() {
                               notificationId: notification.id,
                               accept: false,
                               notificationBody: notification.body,
+                              joinRequestId: null,
                             });
                           }}
                         >

@@ -12,12 +12,13 @@ import {
   FieldLabel,
   FieldDescription,
   FieldTitle,
+  FieldContent,
 } from "@/components/ui/field";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useCreateSpaceFormStore } from "@/store/create-space-form";
 import { Controller, useFormContext } from "react-hook-form";
 import { CreateSpaceFormValues } from "../../schemas";
-import { CreateSpaceIllustration } from "./CreateSpaceIllustration";
+
 import {
   InputGroup,
   InputGroupAddon,
@@ -25,10 +26,33 @@ import {
   InputGroupText,
   InputGroupTextarea,
 } from "@/components/ui/input-group";
+import { useRef, useState } from "react";
+import { ImagePlus, X } from "lucide-react";
 
 export const CreateSpaceStepOne = () => {
   const nextStep = useCreateSpaceFormStore((state) => state.nextStep);
   const form = useFormContext<CreateSpaceFormValues>();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    onChange: (file: File | null) => void,
+  ) => {
+    const file = e.target.files?.[0] ?? null;
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return;
+    if (file.size > 4 * 1024 * 1024) return;
+    setPreview(URL.createObjectURL(file));
+    onChange(file);
+  };
+
+  const handleRemove = (onChange: (file: File | null) => void) => {
+    setPreview(null);
+    onChange(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
   return (
     <>
       <div className="w-full md:w-1/2 flex flex-col gap-6">
@@ -99,6 +123,8 @@ export const CreateSpaceStepOne = () => {
                 </Field>
               )}
             />
+
+
             <Controller
               name="privacy"
               control={form.control}
@@ -113,23 +139,23 @@ export const CreateSpaceStepOne = () => {
                     <FieldLabel htmlFor="space-private">
                       <Field orientation="horizontal" className="rounded-md border p-3">
                         <RadioGroupItem value="Private" id="space-private" />
-                        <div className="flex flex-col gap-1">
+                        <FieldContent>
                           <FieldTitle>Private</FieldTitle>
                           <FieldDescription>
                             Only invited members can join.
                           </FieldDescription>
-                        </div>
+                        </FieldContent>
                       </Field>
                     </FieldLabel>
                     <FieldLabel htmlFor="space-public">
                       <Field orientation="horizontal" className="rounded-md border p-3">
                         <RadioGroupItem value="Public" id="space-public" />
-                        <div className="flex flex-col gap-1">
+                        <FieldContent>
                           <FieldTitle>Public</FieldTitle>
                           <FieldDescription>
                             Visible to members with access to public discovery.
                           </FieldDescription>
-                        </div>
+                        </FieldContent>
                       </Field>
                     </FieldLabel>
                   </RadioGroup>
@@ -142,10 +168,65 @@ export const CreateSpaceStepOne = () => {
           </Field>
         </form>
       </div>
-      <div className="hidden md:block mt-8 ml-4 relative w-1/2 rounded-lg overflow-hidden bg-linear-to-br from-card/30 to-muted/20 border border-border/50 shadow-inner">
-        <div className="absolute inset-0 flex items-center justify-center p-6">
-          <CreateSpaceIllustration className="w-full h-full object-contain" />
-        </div>
+      <div className="hidden md:flex flex-col mt-8 ml-4 w-1/2 gap-4 flex-1">
+        {/* Thumbnail upload */}
+        <Controller
+          name="thumbnail"
+          control={form.control}
+          render={({ field: { onChange } }) => (
+            <Field className="flex-1 flex flex-col">
+              <FieldLabel>Thumbnail <span className="font-normal text-muted-foreground">(optional)</span></FieldLabel>
+              <input
+                ref={fileInputRef}
+                type="file"
+                id="space-thumbnail"
+                accept="image/*"
+                className="sr-only"
+                onChange={(e) => handleFileChange(e, onChange)}
+              />
+              {preview ? (
+                <div className="relative group rounded-xl overflow-hidden border border-border flex-1 w-full">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={preview}
+                    alt="Thumbnail preview"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      Change
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => handleRemove(onChange)}
+                    >
+                      <X className="size-3.5" />
+                      Remove
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full flex-1 rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-1.5 text-muted-foreground hover:border-primary/50 hover:text-primary hover:bg-primary/5 transition-all duration-200 cursor-pointer"
+                >
+                  <ImagePlus className="size-5" />
+                  <span className="text-xs font-medium">Click to upload thumbnail</span>
+                  <span className="text-[10px]">PNG, JPG, WEBP up to 4 MB</span>
+                </button>
+              )}
+            </Field>
+          )}
+        />
+
       </div>
     </>
   );

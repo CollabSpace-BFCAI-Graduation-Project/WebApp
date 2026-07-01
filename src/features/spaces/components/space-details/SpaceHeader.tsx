@@ -3,6 +3,8 @@
 import { motion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import type { Space } from "@/lib/types/api-types";
+import { resolveBackendMediaUrl } from "@/lib/media-url";
+import { useAuthStore } from "@/store/auth-store";
 import { cn } from "@/lib/utils";
 
 import { getCategoryGradientClass, normalizeCategory } from "./space-utils";
@@ -12,6 +14,14 @@ interface SpaceHeaderProps {
 }
 
 export function SpaceHeader({ space }: SpaceHeaderProps) {
+  const token = useAuthStore((s) => s.token);
+  const thumbnailUrl = (() => {
+    const resolved = resolveBackendMediaUrl(space.thumbnailImageUrl);
+    if (!resolved) return null;
+    if (!token || !resolved.startsWith("/api/backend-files/")) return resolved;
+    return `${resolved}?token=${encodeURIComponent(token)}`;
+  })();
+
   return (
     <motion.section
       className={cn(
@@ -22,7 +32,15 @@ export function SpaceHeader({ space }: SpaceHeaderProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <div className="absolute inset-0 bg-black/10" />
+      {thumbnailUrl && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={thumbnailUrl}
+          alt=""
+          className="absolute inset-0 size-full object-cover"
+        />
+      )}
+      <div className={cn("absolute inset-0", thumbnailUrl ? "bg-black/40" : "bg-black/10")} />
       <motion.div
         className="relative z-10 max-w-3xl space-y-4"
         initial={{ opacity: 0, y: 12 }}

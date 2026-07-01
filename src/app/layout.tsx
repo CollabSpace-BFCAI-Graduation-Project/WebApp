@@ -8,6 +8,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { QueryProvider } from "@/context/QueryProvider";
 import { Geist_Mono, Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { AuthCookieSync } from "@/components/shared/AuthCookieSync";
 
 const interHeading = Inter({subsets:['latin'],variable:'--font-heading'});
 
@@ -42,6 +43,7 @@ export default async function RootLayout({
             <NuqsAdapter>{children}</NuqsAdapter>
           </QueryProvider>
           <Toaster richColors />
+          <AuthCookieSync />
         </ThemeProvider>
       </body>
     </html>

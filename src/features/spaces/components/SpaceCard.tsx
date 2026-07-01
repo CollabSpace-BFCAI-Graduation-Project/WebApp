@@ -12,6 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Globe2, LockKeyhole, Star, Users } from "lucide-react";
 import { Space } from "@/lib/types/api-types";
+import { resolveBackendMediaUrl } from "@/lib/media-url";
+import { useAuthStore } from "@/store/auth-store";
 import { useToggleFavorite } from "../hooks/useToggleFavorite";
 import { useView } from "../hooks/useView";
 import { fadeInUp, hoverLift, tapScale } from "@/lib/animations";
@@ -27,6 +29,14 @@ export const SpaceCard = ({ space, isOnline, memberCount: memberCountProp }: Pro
   const [view] = useView();
   const memberCount = memberCountProp ?? getSpaceMemberCount(space);
   const isPrivate = isPrivateSpace(space);
+  const token = useAuthStore((s) => s.token);
+  // Thumbnails live behind auth; append the token so the image actually loads.
+  const thumbnailUrl = (() => {
+    const resolved = resolveBackendMediaUrl(space.thumbnailImageUrl);
+    if (!resolved) return null;
+    if (!token || !resolved.startsWith("/api/backend-files/")) return resolved;
+    return `${resolved}?token=${encodeURIComponent(token)}`;
+  })();
 
   return (
     <motion.div
@@ -44,7 +54,7 @@ export const SpaceCard = ({ space, isOnline, memberCount: memberCountProp }: Pro
         view === "list" && "sm:flex-row sm:items-stretch sm:h-48",
       )}
     >
-      {/* Gradient Area */}
+      {/* Gradient Area (with optional thumbnail overlay) */}
       <div
         className={cn(
           "relative h-40 w-full p-4 shrink-0",
@@ -52,6 +62,14 @@ export const SpaceCard = ({ space, isOnline, memberCount: memberCountProp }: Pro
           view === "list" && "sm:h-auto sm:w-56",
         )}
       >
+        {thumbnailUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={thumbnailUrl}
+            alt=""
+            className="absolute inset-0 size-full object-cover"
+          />
+        )}
         {/* Status Pill (Top Left) */}
         <div className="absolute left-4 top-4">
           <Badge

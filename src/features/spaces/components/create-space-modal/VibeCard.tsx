@@ -4,7 +4,7 @@ import { Vibe, SpaceVibe } from "../../types";
 import { useFormContext } from "react-hook-form";
 import { CreateSpaceFormValues } from "../../schemas";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createInviteCode, createSpace, updateSpacePrivacy } from "../../services";
+import { createInviteCode, createSpace, updateSpacePrivacy, uploadSpaceThumbnail } from "../../services";
 import { getSpacePrivacy, isPublicSpace } from "../../space-membership";
 import { syncSpacePrivacyInCache } from "../../space-privacy-sync";
 import { toast } from "sonner";
@@ -74,6 +74,14 @@ export const VibeCard = ({ vibe }: VibeCardProps) => {
         throw new Error(
           "This space could not be set to public. Please try again or contact support.",
         );
+      }
+
+      // Upload thumbnail if one was provided by the user.
+      if (values.thumbnail instanceof File) {
+        await uploadSpaceThumbnail(createdSpace.id, values.thumbnail).catch(() => {
+          // Non-fatal: space is still created even if thumbnail fails.
+          toast.warning("Space created, but thumbnail upload failed. You can set it later in settings.");
+        });
       }
 
       const createdInvite = await createInviteCode(createdSpace.id);

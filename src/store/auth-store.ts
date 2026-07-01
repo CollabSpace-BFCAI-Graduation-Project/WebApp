@@ -21,6 +21,18 @@ interface AuthState {
   logout: () => void;
 }
 
+async function syncSessionCookie(token: string | null) {
+  try {
+    await fetch("/api/auth/session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token }),
+    });
+  } catch {
+    // Non-critical — the cookie sync is best-effort
+  }
+}
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
@@ -28,20 +40,24 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       refreshToken: null,
       isAuthenticated: false,
-      setAuth: (user, token, refreshToken) =>
+      setAuth: (user, token, refreshToken) => {
         set({
           user,
           token,
           refreshToken: refreshToken ?? null,
           isAuthenticated: true,
-        }),
-      logout: () =>
+        });
+        syncSessionCookie(token);
+      },
+      logout: () => {
         set({
           user: null,
           token: null,
           refreshToken: null,
           isAuthenticated: false,
-        }),
+        });
+        syncSessionCookie(null);
+      },
     }),
     {
       name: "collabspace-auth",

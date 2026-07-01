@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuthStore } from "@/store/auth-store";
-import type { MemberDto, UserSummaryDto } from "@/lib/types/api-types";
 import { getInitials } from "@/features/spaces/components/space-details/space-utils";
 import { cn } from "@/lib/utils";
 
@@ -27,11 +26,25 @@ export function MentionAutocomplete({
   isOpen,
   onSelect,
   onClose,
-  containerRef,
 }: MentionAutocompleteProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const listRef = useRef<HTMLDivElement>(null);
   const currentUser = useAuthStore((s) => s.user);
+  const [lastQuery, setLastQuery] = useState(query);
+  const [wasOpen, setWasOpen] = useState(isOpen);
+
+  // Reset the highlighted row when the query changes or the popover re-opens.
+  // Done during render (instead of in an effect) to avoid cascading renders.
+  if (query !== lastQuery) {
+    setLastQuery(query);
+    setActiveIndex(0);
+  }
+  if (isOpen && !wasOpen) {
+    setWasOpen(true);
+    setActiveIndex(0);
+  } else if (!isOpen && wasOpen) {
+    setWasOpen(false);
+  }
 
   const filtered = query
     ? members.filter((m) => {
@@ -43,13 +56,6 @@ export function MentionAutocomplete({
         );
       })
     : members.filter((m) => currentUser && m.id !== currentUser.id);
-
-  const resetIndex = useCallback(() => setActiveIndex(0), []);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    resetIndex();
-  }, [query, isOpen, resetIndex]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {

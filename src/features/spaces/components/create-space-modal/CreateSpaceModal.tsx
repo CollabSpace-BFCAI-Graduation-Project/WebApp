@@ -27,6 +27,7 @@ export function CreateSpaceModal() {
       description: "",
       privacy: "Private",
       vibe: null,
+      thumbnail: null,
     },
   });
 

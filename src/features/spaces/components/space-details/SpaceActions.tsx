@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Boxes, MessageSquareText, Share2, UserPlus, Hourglass } from "lucide-react";
+import { Boxes, MessageSquareText, Settings, Share2, UserPlus, Hourglass } from "lucide-react";
 import { motion } from "motion/react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface SpaceActionsProps {
   spaceId: string;
@@ -15,6 +16,8 @@ interface SpaceActionsProps {
   isJoining: boolean;
   isRequestingJoin: boolean;
   isInviting: boolean;
+  /** Whether the current user may manage this space (Owner/Admin). */
+  canManage?: boolean;
   onJoin: () => void;
   onRequestJoin: () => void;
   onInvite: () => void;
@@ -40,13 +43,17 @@ export function SpaceActions({
   isJoining,
   isRequestingJoin,
   isInviting,
+  canManage,
   onJoin,
   onRequestJoin,
   onInvite,
 }: SpaceActionsProps) {
   return (
     <motion.div
-      className="grid gap-3 sm:grid-cols-3"
+      className={cn(
+        "grid gap-3",
+        canManage ? "sm:grid-cols-2 lg:grid-cols-4" : "sm:grid-cols-3",
+      )}
       variants={motionVariants.container}
       initial="hidden"
       animate="visible"
@@ -156,6 +163,21 @@ export function SpaceActions({
           {isInviting ? "Creating..." : "Invite"}
         </Button>
       </motion.div>
+      {canManage && (
+        <motion.div
+          variants={motionVariants.item}
+          whileHover={{ y: -2 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <Link
+            href={`/spaces/${spaceId}/settings`}
+            className={buttonVariants({ variant: "outline", className: "w-full" })}
+          >
+            <Settings />
+            Settings
+          </Link>
+        </motion.div>
+      )}
     </motion.div>
   );
 }

@@ -23,7 +23,7 @@ import { sidebarItemVariants, staggerContainer } from "@/lib/animations";
 const sidebarLinks: SidebarLinkItem[] = [
   {
     name: "Spaces",
-    url: "/",
+    url: "/spaces",
     icon: <GripIcon size={18} />,
   },
   {

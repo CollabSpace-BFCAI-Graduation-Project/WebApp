@@ -5,11 +5,13 @@ import { PageMotion } from "@/components/shared/PageMotion";
 import { Metadata } from "next";
 
 export default function SpacesPage() {
-  return <PageMotion className="space-y-6 p-6">
+  return (
+    <PageMotion className="space-y-6 p-6">
       <Header />
       <Filters />
       <SpacesList />
     </PageMotion>
+  );
 }
 
 export const metadata: Metadata = {
