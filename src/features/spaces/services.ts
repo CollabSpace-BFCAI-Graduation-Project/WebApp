@@ -4,6 +4,7 @@ import { getSpacePrivacy } from "./space-membership";
 import { getPrivacyOverride } from "./space-privacy-sync";
 import type {
   BatchInviteResult,
+  CreateRoleRequestDto,
   CreateSpaceRequest,
   CreateSpaceResponse,
   ChatChannel,
@@ -12,18 +13,24 @@ import type {
   FavoriteSpaceResponse,
   FileItem,
   FolderItem,
+  ForwardMessageRequestDto,
   InviteCode,
+  InviteCodeSpaceInfo,
   JoinRequest,
   LinkItem,
   MemberDto,
   MessageResponse,
   PagedResponse,
   PaginationMeta,
+  PermissionDefinition,
   Profile,
+  RoleResponseDto,
+  SaveThumbnailPositionRequestDto,
   Space,
   SpacePrivacyResponse,
   SpaceSession,
   StorageContents,
+  UpdateSpaceThumbnailResponseDto,
 } from "@/lib/types/api-types";
 
 const pagedParams = (page: number, pageSize: number) => ({
@@ -268,11 +275,16 @@ export const getFavoriteSpaces = async (page = 1, pageSize = 100) => {
 export const toggleFavorite = (id: string) =>
   api.post<FavoriteSpaceResponse>(`/spaces/${id}/favorite`);
 
-export const joinSpaceWithCode = (code: string) => {
-  if (!code || code.trim().length < 4) {
-    return Promise.reject(new Error("Invite code is too short"));
+export const joinSpaceWithCode = async (code: string) => {
+  const trimmed = code.trim();
+
+  if (!trimmed || trimmed.length < 4) {
+    throw new Error("Invite code is too short");
   }
-  return api.post<MessageResponse>(`/spaces/join-via-code/${encodeURIComponent(code.trim())}`);
+
+  return api.post<MessageResponse>(
+    `/spaces/join-via-code/${encodeURIComponent(trimmed)}`,
+  );
 };
 
 export const submitJoinRequest = (
@@ -391,3 +403,119 @@ export const deleteStorageItem = (id: string, itemId: string) =>
 
 export const cancelJoinRequest = (requestId: string) =>
   api.delete<MessageResponse>(`/spaces/my-join-requests/${requestId}`);
+
+// ---------------------------------------------------------------------------
+// Thumbnails (Task 1)
+// ---------------------------------------------------------------------------
+
+/** Upload (or replace) a space thumbnail. `PATCH /spaces/{id}/thumbnail` (multipart). */
+export const uploadSpaceThumbnail = async (id: string, file: File) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("File", file);
+  formData.append("image", file);
+  formData.append("Image", file);
+  formData.append("thumbnail", file);
+  formData.append("Thumbnail", file);
+  const raw = await api.patch<Record<string, unknown>>(
+    `/spaces/${id}/thumbnail`,
+    formData,
+  );
+  // Normalize PascalCase / camelCase response fields from the backend.
+  const url = (raw?.thumbnailImageUrl ??
+    raw?.ThumbnailImageUrl ??
+    raw?.thumbnailImage ??
+    raw?.ThumbnailImage ??
+    raw?.imageUrl ??
+    raw?.ImageUrl ??
+    raw?.url ??
+    raw?.Url ??
+    null) as string | null;
+  return {
+    thumbnailImageUrl: url,
+    thumbnailColor: (raw?.thumbnailColor ?? raw?.ThumbnailColor ?? null) as string | null,
+  } satisfies UpdateSpaceThumbnailResponseDto;
+};
+
+/** Save the thumbnail focal point + gradient key. `PUT /spaces/{id}/thumbnail-position`. */
+export const updateSpaceThumbnailPosition = (
+  id: string,
+  data: SaveThumbnailPositionRequestDto,
+) => api.put<UpdateSpaceThumbnailResponseDto>(`/spaces/${id}/thumbnail-position`, data);
+
+// ---------------------------------------------------------------------------
+// Invite-code lookups (Task 6)
+// ---------------------------------------------------------------------------
+
+/** Resolve public space info for an invite code without joining. `GET /spaces/invites/codes/{code}`. */
+export const getSpaceByInviteCode = (code: string) =>
+  api.get<InviteCodeSpaceInfo>(
+    `/spaces/invites/codes/${encodeURIComponent(code.trim())}`,
+  );
+
+/** Delete a single invite code. `DELETE /spaces/{id}/invites/codes/{codeId}`. */
+export const deleteInviteCode = (id: string, codeId: string) =>
+  api.delete<MessageResponse>(`/spaces/${id}/invites/codes/${codeId}`);
+
+// ---------------------------------------------------------------------------
+// Roles & members RBAC (Task 3)
+// ---------------------------------------------------------------------------
+
+/** List all roles defined for a space. `GET /spaces/{id}/roles`. */
+export const getSpaceRoles = (id: string) =>
+  api.get<RoleResponseDto[]>(`/spaces/${id}/roles`);
+
+/** List the catalog of permissions available for custom roles. `GET /spaces/permissions`. */
+export const getPermissionsCatalog = () =>
+  api.get<PermissionDefinition[]>(`/spaces/permissions`);
+
+/** Create a custom role. `POST /spaces/{id}/roles`. */
+export const createCustomRole = (id: string, data: CreateRoleRequestDto) =>
+  api.post<RoleResponseDto>(`/spaces/${id}/roles`, data);
+
+/** Update an existing role. `PUT /spaces/{id}/roles/{roleId}`. */
+export const updateCustomRole = (
+  id: string,
+  roleId: string,
+  data: CreateRoleRequestDto,
+) => api.put<RoleResponseDto>(`/spaces/${id}/roles/${roleId}`, data);
+
+/** Delete a custom role. `DELETE /spaces/{id}/roles/{roleId}`. */
+export const deleteCustomRole = (id: string, roleId: string) =>
+  api.delete<MessageResponse>(`/spaces/${id}/roles/${roleId}`);
+
+/** Assign an additional role to a member. `POST /spaces/{id}/members/{userId}/roles/{roleId}`. */
+export const assignMemberRole = (id: string, userId: string, roleId: string) =>
+  api.post<MemberDto>(`/spaces/${id}/members/${userId}/roles/${roleId}`);
+
+/** Remove an additional role from a member. `DELETE /spaces/{id}/members/{userId}/roles/{roleId}`. */
+export const removeMemberRole = (id: string, userId: string, roleId: string) =>
+  api.delete<MemberDto>(`/spaces/${id}/members/${userId}/roles/${roleId}`);
+
+/** Change a member's base role (Owner/Admin/Member). `PUT /spaces/{id}/members/{userId}/role`. */
+export const updateMemberBaseRole = (id: string, userId: string, role: string) =>
+  api.put<MemberDto>(`/spaces/${id}/members/${userId}/role`, { role });
+
+/** Remove a member from a space. `DELETE /spaces/{id}/members/{userId}`. */
+export const removeSpaceMember = (id: string, userId: string) =>
+  api.delete<MessageResponse>(`/spaces/${id}/members/${userId}`);
+
+/** Transfer ownership to another member. `POST /spaces/{id}/ownership/transfer`. */
+export const transferSpaceOwnership = (id: string, userId: string) =>
+  api.post<MessageResponse>(`/spaces/${id}/ownership/transfer`, { newOwnerId: userId });
+
+// ---------------------------------------------------------------------------
+// Message forwarding (Task 4)
+// ---------------------------------------------------------------------------
+
+/** Forward a message to another channel. `POST .../messages/{messageId}/forward`. */
+export const forwardMessage = (
+  spaceId: string,
+  channelId: string,
+  messageId: string,
+  targetChannelId: string,
+) =>
+  api.post<ChatMessage>(
+    `/spaces/${spaceId}/channels/${channelId}/messages/${messageId}/forward`,
+    { targetChannelId } satisfies ForwardMessageRequestDto,
+  );

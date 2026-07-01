@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
@@ -36,6 +36,7 @@ import {
   isPublicSpace,
   isSpaceMember,
 } from "../../space-membership";
+import { isAtLeastAdmin } from "../../permissions";
 import { syncSpacePrivacyInCache } from "../../space-privacy-sync";
 import { SpaceAboutSidebar } from "./SpaceAboutSidebar";
 import { SpaceActions } from "./SpaceActions";
@@ -89,19 +90,35 @@ export function SpaceDetailsPageClient({
     retry: 0,
   });
 
+  // Auto-join when arriving via an invite link (?invite=CODE).
+  // We track whether we've already attempted so the effect doesn't re-fire.
+  const hasAttemptedInviteJoin = useRef(false);
   useEffect(() => {
-    if (inviteCode && !error) {
-      const joinWithCode = async () => {
-        await joinSpaceWithCode(inviteCode);
-        await refetchUserSpaces(queryClient);
-      };
-      joinWithCode();
-    }
-  }, [inviteCode, error, queryClient]);
+    if (!inviteCode || hasAttemptedInviteJoin.current) return;
+    hasAttemptedInviteJoin.current = true;
+
+    joinSpaceWithCode(inviteCode)
+      .then(() => refetchUserSpaces(queryClient))
+      .catch(() => {
+        // Errors are handled by the error + inviteCode useEffect below.
+      });
+  }, [inviteCode, queryClient]);
   const space = data?.space;
   const storage = data?.storage ?? emptyStorage;
   const isMember = space ? isSpaceMember(space, currentUserId) : false;
   const canRequestJoin = !!space && !isMember && canSubmitJoinRequest(space);
+
+  // Resolve the current user's role within this space to gate management UI.
+  const currentMemberRole = space
+    ? (() => {
+        if (space.owner?.id === currentUserId) return "Owner";
+        return (
+          (space.members ?? []).find((m) => m.id === currentUserId)?.baseRole ??
+          (space.isOwner ? "Owner" : "Member")
+        );
+      })()
+    : undefined;
+  const canManage = isAtLeastAdmin(currentMemberRole ? { baseRole: currentMemberRole } : null);
 
   const { data: joinRequestsData } = useGetMyJoinRequests();
 
@@ -306,6 +323,7 @@ export function SpaceDetailsPageClient({
               isJoining={joinMutation.isPending}
               isRequestingJoin={requestJoinMutation.isPending}
               isInviting={inviteMutation.isPending}
+              canManage={canManage}
               onJoin={() => joinMutation.mutate()}
               onRequestJoin={() => requestJoinMutation.mutate()}
               onInvite={() => inviteMutation.mutate()}

@@ -90,7 +90,7 @@ export const CreateSpaceStepThree = () => {
           onClick={() => {
             reset();
             form.reset();
-            router.push("/");
+            router.push("/spaces");
           }}
         >
           Go to spaces <ArrowRight />{" "}

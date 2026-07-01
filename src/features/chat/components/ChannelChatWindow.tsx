@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { File, Paperclip, Send } from "lucide-react";
+import { File, Paperclip, Reply, Send, Share, X } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -28,6 +28,7 @@ import { useAuthStore } from "@/store/auth-store";
 import { useChatMessages } from "@/hooks/useSignalR";
 import { staggerContainer, staggerItem } from "@/lib/animations";
 import { MentionAutocomplete } from "./MentionAutocomplete";
+import { ForwardMessageDialog } from "./ForwardMessageDialog";
 import { useMention } from "../hooks/useMention";
 interface ChannelChatWindowProps {
   space: Space;
@@ -36,13 +37,19 @@ interface ChannelChatWindowProps {
   className?: string;
 }
 
-function normalizeAttachment(raw: Record<string, unknown>): ChatMessageAttachmentDto {
+function normalizeAttachment(raw: Record<string, unknown>, spaceId?: string): ChatMessageAttachmentDto {
   const rawUrl = (raw.url ?? raw.Url ?? null) as string | null;
   const rawFileId = (raw.fileId ?? raw.FileId ?? null) as string | null;
+  // Resolve the URL through the backend proxy so it works for all users,
+  // regardless of whether they uploaded the file themselves.
+  let resolvedUrl = rawUrl ? (resolveBackendMediaUrl(rawUrl) ?? null) : null;
+  if (!resolvedUrl && rawFileId && spaceId) {
+    resolvedUrl = `/api/backend-files/api/spaces/${spaceId}/storage/files/${rawFileId}/download`;
+  }
   return {
     id: String(raw.id ?? raw.Id ?? ""),
     fileId: rawFileId,
-    url: rawUrl ? (resolveBackendMediaUrl(rawUrl) ?? null) : null,
+    url: resolvedUrl,
     fileName: String(raw.fileName ?? raw.FileName ?? ""),
     fileSize: Number(raw.fileSize ?? raw.FileSize ?? 0),
     mimeType: String(raw.mimeType ?? raw.MimeType ?? ""),
@@ -50,7 +57,7 @@ function normalizeAttachment(raw: Record<string, unknown>): ChatMessageAttachmen
   };
 }
 
-function normalizeChatMessage(raw: Record<string, unknown>): ChatMessage {
+function normalizeChatMessage(raw: Record<string, unknown>, spaceId?: string): ChatMessage {
   return {
     id: String(raw.id ?? raw.Id ?? ""),
     channelId: String(raw.channelId ?? raw.ChannelId ?? ""),
@@ -63,7 +70,7 @@ function normalizeChatMessage(raw: Record<string, unknown>): ChatMessage {
     sender: normalizeUserSummary((raw.sender ?? raw.Sender ?? {}) as Record<string, unknown>),
     deletedBy: (raw.deletedBy ?? raw.DeletedBy ?? null) as ChatMessage["deletedBy"],
     mentions: ((raw.mentions ?? raw.Mentions ?? []) as Record<string, unknown>[]).map(normalizeUserSummary),
-    attachments: ((raw.attachments ?? raw.Attachments ?? []) as Record<string, unknown>[]).map(normalizeAttachment),
+    attachments: ((raw.attachments ?? raw.Attachments ?? []) as Record<string, unknown>[]).map((att) => normalizeAttachment(att, spaceId)),
   };
 }
 
@@ -86,18 +93,22 @@ function renderMessageText(text: string, mentions: UserSummaryDto[]) {
   });
 
   const parts = displayText.split(/(@\w+)/g);
-  return parts.map((part, i) => {
-    const isMention =
-      part.startsWith("@") &&
-      mentionUsernames.some((u) => u === part.slice(1));
-    return isMention ? (
-      <span key={i} className="rounded-sm bg-primary/15 px-0.5 font-medium text-primary">
-        {part}
-      </span>
-    ) : (
-      part
-    );
-  });
+  return (
+    <>
+      {parts.map((part, i) => {
+        const isMention =
+          part.startsWith("@") &&
+          mentionUsernames.some((u) => u === part.slice(1));
+        return isMention ? (
+          <span key={i} className="rounded-sm bg-primary/15 px-0.5 font-medium text-primary">
+            {part}
+          </span>
+        ) : (
+          <span key={i}>{part}</span>
+        );
+      })}
+    </>
+  );
 }
 
 export const ChannelChatWindow = ({
@@ -108,6 +119,8 @@ export const ChannelChatWindow = ({
 }: ChannelChatWindowProps) => {
   const queryClient = useQueryClient();
   const [draft, setDraft] = useState("");
+  const [replyTo, setReplyTo] = useState<ChatMessage | null>(null);
+  const [forwardTarget, setForwardTarget] = useState<ChatMessage | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [localFileUrls, setLocalFileUrls] = useState<Map<string, string>>(new Map());
   const token = useAuthStore((s) => s.token);
@@ -135,7 +148,10 @@ export const ChannelChatWindow = ({
   );
 
   const [cursorPosition, setCursorPosition] = useState(0);
-  const [isMentionOpen, setIsMentionOpen] = useState(false);
+  // Keep the mention popover closed after an explicit dismiss until the user
+  // begins typing a fresh `@`. Tracked via the `query` value at dismissal so
+  // the check is pure (no effect needed).
+  const [mentionClosedFor, setMentionClosedFor] = useState<string | null>(null);
   const inputContainerRef = useRef<HTMLDivElement>(null);
 
   const { isMentioning, query, replaceMention, setCursorPosition: setMentionCursor } = useMention(draft);
@@ -144,21 +160,18 @@ export const ChannelChatWindow = ({
     setMentionCursor(cursorPosition);
   }, [cursorPosition, setMentionCursor]);
 
-  useEffect(() => {
-    if (isMentioning) {
-      setIsMentionOpen(true);
-    } else {
-      setIsMentionOpen(false);
-    }
-  }, [isMentioning]);
+  // Re-open automatically once the user starts a new mention query. Compared
+  // purely during render against the last-dismissed query — no state effect.
+  const isMentionOpen =
+    isMentioning && (query !== mentionClosedFor || mentionClosedFor === null);
 
   const handleMentionSelect = useCallback(
     (user: { id: string; username: string; displayName: string | null }) => {
       const newDraft = replaceMention(user.username);
       setDraft(newDraft);
-      setIsMentionOpen(false);
+      setMentionClosedFor(query);
     },
-    [replaceMention],
+    [replaceMention, query],
   );
 
   const { data, error, isLoading } = useQuery({
@@ -198,13 +211,13 @@ export const ChannelChatWindow = ({
   }, [allStorageFiles]);
 
   const initialMessages: ChatMessage[] = useMemo(
-    () => (data?.data ?? []).map((m) => normalizeChatMessage(m as unknown as Record<string, unknown>)).filter((m) => !m.isDeleted),
-    [data?.data],
+    () => (data?.data ?? []).map((m) => normalizeChatMessage(m as unknown as Record<string, unknown>, spaceId)).filter((m) => !m.isDeleted),
+    [data?.data, spaceId],
   );
 
   const normalizedRealtimeMessages = useMemo(
-    () => realtimeMessages.map((m) => normalizeChatMessage(m as unknown as Record<string, unknown>)),
-    [realtimeMessages],
+    () => realtimeMessages.map((m) => normalizeChatMessage(m as unknown as Record<string, unknown>, spaceId)),
+    [realtimeMessages, spaceId],
   );
 
   const mergedMessages = useMemo(() => {
@@ -220,19 +233,20 @@ export const ChannelChatWindow = ({
         (a, b) =>
           new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
       );
-  }, [initialMessages, realtimeMessages]);
+  }, [initialMessages, normalizedRealtimeMessages]);
 
   const sendMutation = useMutation({
     mutationFn: (payload: { text: string; files?: File[]; mentionedUserIds?: string[] }) =>
       sendChannelMessage(spaceId, channel?.id ?? "", {
         text: payload.text,
-        parentId: null,
+        parentId: replyTo?.id ?? null,
         files: payload.files,
         mentionedUserIds: payload.mentionedUserIds,
       }),
     onSuccess: async (rawMessage, variables) => {
-      const newMessage = normalizeChatMessage(rawMessage as unknown as Record<string, unknown>);
+      const newMessage = normalizeChatMessage(rawMessage as unknown as Record<string, unknown>, spaceId);
       setDraft("");
+      setReplyTo(null);
       setSelectedFiles([]);
       if (fileInputRef.current) fileInputRef.current.value = "";
       if (newMessage.attachments.length > 0 && variables.files) {
@@ -298,7 +312,7 @@ export const ChannelChatWindow = ({
       if (invalidatedFileIdsRef.current.has(`fetch_${fId}`)) continue;
       Promise.resolve().then(async () => {
         try {
-          const proxyUrl = `/api/backend-files/api/files/${fId}`;
+          const proxyUrl = `/api/backend-files/api/spaces/${spaceId}/storage/files/${fId}/download`;
           const headers: Record<string, string> = {};
           if (token) headers.Authorization = `Bearer ${token}`;
           const res = await fetch(proxyUrl, { headers });
@@ -307,7 +321,7 @@ export const ChannelChatWindow = ({
           const blobUrl = URL.createObjectURL(blob);
           setLocalFileUrls((prev) => new Map(prev).set(fId, blobUrl));
         } catch {
-          // file not downloadable by id — expected for chat attachments
+          // file not downloadable
         }
       });
       invalidatedFileIdsRef.current.add(`fetch_${fId}`);
@@ -393,7 +407,8 @@ export const ChannelChatWindow = ({
             {displayMessages.map((message, index) => (
               <motion.div
                 key={message.id}
-                className="flex items-start gap-3"
+                id={`message-${message.id}`}
+                className="group flex items-start gap-3"
                 variants={staggerItem}
                 custom={index}
                 initial={reduceMotion ? false : staggerItem.initial}
@@ -408,7 +423,56 @@ export const ChannelChatWindow = ({
                     {getInitials(message.sender.username)}
                   </AvatarFallback>
                 </Avatar>
-                <div className="min-w-0 flex-1 rounded-lg bg-muted p-3">
+                <div className="relative min-w-0 flex-1 rounded-lg bg-muted p-3">
+                  {/* Hover actions: reply + forward */}
+                  <div className="absolute -top-3 right-2 hidden gap-1 rounded-md border bg-background p-0.5 shadow-sm group-hover:flex">
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      className="size-6"
+                      title="Reply"
+                      onClick={() => setReplyTo(message)}
+                    >
+                      <Reply className="size-3.5" />
+                    </Button>
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      className="size-6"
+                      title="Forward"
+                      onClick={() => setForwardTarget(message)}
+                    >
+                      <Share className="size-3.5" />
+                    </Button>
+                  </div>
+
+                  {/* Referenced (replied-to) message */}
+                  {message.parentMessage && (
+                    <a
+                      href={`#message-${message.parentMessage.id}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        const el = document.getElementById(`message-${message.parentMessage!.id}`);
+                        el?.scrollIntoView({ behavior: "smooth", block: "center" });
+                        el?.classList.add("ring-2", "ring-primary");
+                        setTimeout(() => el?.classList.remove("ring-2", "ring-primary"), 1500);
+                      }}
+                      className="mb-1.5 flex items-center gap-1.5 rounded-md border-l-2 border-primary/60 bg-background/60 px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-background"
+                    >
+                      <Reply className="size-3 shrink-0" />
+                      <span className="truncate">
+                        <span className="font-medium text-foreground">
+                          @{message.parentMessage.sender.username}
+                        </span>
+                        {message.parentMessage.text
+                          ? `: ${message.parentMessage.text.replace(/\u200B/g, "").slice(0, 80)}`
+                          : ""}
+                      </span>
+                    </a>
+                  )}
+
                   <div className="mb-1 flex items-center gap-2">
                     <span className="text-sm font-semibold">
                       @{message.sender.username}
@@ -428,27 +492,56 @@ export const ChannelChatWindow = ({
                   {message.attachments && message.attachments.length > 0 && (
                     <div className="mt-2 flex flex-wrap gap-2">
                       {message.attachments.map((attachment) => {
-                        const rawUrl = attachment.url
-                          ?? (attachment.fileId ? (fileUrlMap.get(attachment.fileId) ?? localFileUrls.get(attachment.fileId) ?? getCachedDataUrl(attachment.fileId) ?? null) : null);
-                        if (!rawUrl) {
+                        // Priority: local blob cache (sender's just-uploaded file)
+                        // → cached data URL
+                        // → storage fileUrlMap (for the sender's session)
+                        // → attachment.url (already proxy-resolved in normalizeAttachment)
+                        const resolvedUrl = (attachment.fileId
+                          ? (localFileUrls.get(attachment.fileId) ?? getCachedDataUrl(attachment.fileId) ?? fileUrlMap.get(attachment.fileId) ?? null)
+                          : null) ?? attachment.url;
+
+                        if (!resolvedUrl) {
+                          // No URL available yet — show a placeholder chip
                           return (
-                            <div key={attachment.id} className="flex items-center gap-1.5 rounded-lg bg-background px-2.5 py-1 text-xs border opacity-60">
+                            <div key={attachment.id} className="flex items-center gap-1.5 rounded-lg border bg-background px-2.5 py-1 text-xs opacity-60">
                               <File className="size-3.5 shrink-0" />
                               <span className="max-w-[200px] truncate">{attachment.fileName}</span>
                             </div>
                           );
                         }
-                        const isLocalUrl = rawUrl.startsWith("blob:") || rawUrl.startsWith("data:");
-                        const proxyUrl = isLocalUrl ? rawUrl : (resolveBackendMediaUrl(rawUrl) ?? rawUrl);
-                        const authedUrl = isLocalUrl ? proxyUrl : attachAuth(proxyUrl);
+
+                        // Local blob / data URLs don't need auth or further proxying
+                        const isLocal = resolvedUrl.startsWith("blob:") || resolvedUrl.startsWith("data:");
+                        const finalUrl = isLocal ? resolvedUrl : attachAuth(resolvedUrl);
+
                         const mime = (attachment.mimeType ?? "").toLowerCase();
-                        const isImage = mime.startsWith("image/") || /\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(attachment.fileName);
+                        const isImage =
+                          mime.startsWith("image/") ||
+                          /\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(attachment.fileName);
+
                         return isImage ? (
-                          <a key={attachment.id} href={authedUrl} target="_blank" rel="noopener noreferrer" className="block overflow-hidden rounded-lg border">
-                            <img src={authedUrl} alt={attachment.fileName} className="max-h-60 max-w-full object-cover" />
+                          <a
+                            key={attachment.id}
+                            href={finalUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block overflow-hidden rounded-lg border"
+                          >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={finalUrl}
+                              alt={attachment.fileName}
+                              className="max-h-60 max-w-xs object-cover"
+                            />
                           </a>
                         ) : (
-                          <a key={attachment.id} href={authedUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 rounded-lg bg-background px-2.5 py-1 text-xs border hover:bg-accent">
+                          <a
+                            key={attachment.id}
+                            href={finalUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1.5 rounded-lg border bg-background px-2.5 py-1 text-xs hover:bg-accent"
+                          >
                             <File className="size-3.5 shrink-0" />
                             <span className="max-w-[200px] truncate">{attachment.fileName}</span>
                           </a>
@@ -474,6 +567,29 @@ export const ChannelChatWindow = ({
         </div>
 
         <div className="border-t p-4">
+          {replyTo && (
+            <div className="mb-2 flex items-center gap-2 rounded-md border-l-2 border-primary bg-muted/60 px-2.5 py-1.5">
+              <Reply className="size-3.5 shrink-0 text-primary" />
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-medium text-primary">
+                  Replying to @{replyTo.sender.username}
+                </p>
+                <p className="truncate text-xs text-muted-foreground">
+                  {replyTo.text.replace(/\u200B/g, "") || "Attachment"}
+                </p>
+              </div>
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                className="size-6 shrink-0"
+                title="Cancel reply"
+                onClick={() => setReplyTo(null)}
+              >
+                <X className="size-3.5" />
+              </Button>
+            </div>
+          )}
           {selectedFiles.length > 0 && (
             <div className="mb-2 flex flex-wrap gap-2">
               {selectedFiles.map((file, idx) => (
@@ -526,7 +642,7 @@ export const ChannelChatWindow = ({
                 query={query}
                 isOpen={isMentionOpen}
                 onSelect={handleMentionSelect}
-                onClose={() => setIsMentionOpen(false)}
+                onClose={() => setMentionClosedFor(query)}
                 containerRef={inputContainerRef}
               />
               <Input
@@ -576,6 +692,16 @@ export const ChannelChatWindow = ({
           </div>
         </div>
       </div>
+
+      <ForwardMessageDialog
+        open={!!forwardTarget}
+        onOpenChange={(next) => {
+          if (!next) setForwardTarget(null);
+        }}
+        spaceId={spaceId}
+        channelId={channel?.id ?? ""}
+        message={forwardTarget}
+      />
     </div>
   );
 };

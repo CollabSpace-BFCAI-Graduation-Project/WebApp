@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 export default function DashboardRedirectPage() {
-  redirect("/");
+  redirect("/spaces");
 }
 
 export const metadata = {

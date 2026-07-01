@@ -18,7 +18,7 @@ export const SidebarLink = ({ item }: SidebarLinkProps) => {
   const path = usePathname();
   const router = useRouter();
   const { toggleSidebar, isMobile } = useSidebar();
-  const isActive = item.url === "/" ? path === "/" : (path === item.url || path?.startsWith(`${item.url}/`));
+  const isActive = path === item.url || path?.startsWith(`${item.url}/`);
 
   return (
     <motion.li

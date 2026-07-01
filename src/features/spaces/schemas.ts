@@ -11,6 +11,7 @@ export const createSpaceSchema = z.object({
     .max(200, "Description must be at most 200 characters"),
   privacy: z.enum(["Private", "Public"]),
   vibe: z.enum(["Art Gallery", "Cyber Lab", "Cozy Lounge", "Classroom"]).nullable(),
+  thumbnail: z.instanceof(typeof window !== "undefined" ? File : Object).nullable().optional(),
 });
 
 export type CreateSpaceFormValues = z.infer<typeof createSpaceSchema>;

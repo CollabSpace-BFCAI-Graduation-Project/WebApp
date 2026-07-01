@@ -31,15 +31,31 @@ export interface MemberDto {
   name: string;
   username: string;
   email?: string | null;
+  avatarImage?: string | null;
   baseRole: string;
   roles: RoleResponseDto[];
   joinedAt: string;
 }
 
+/** A single permission definition from the catalog (`GET /spaces/permissions`). */
+export interface PermissionDefinition {
+  key: string;
+  label: string;
+  description: string;
+  category: string;
+}
+
+/** Role as returned by the space roles endpoints. */
 export interface RoleResponseDto {
   id: string;
   name: string;
-  key: string;
+  permissions: PermissionDefinition[];
+  color: string | null;
+  position: number;
+  isSystemDefault: boolean;
+  spaceId: string;
+  /** Older payloads exposed `key` instead of `permissions`. */
+  key?: string;
 }
 
 export interface AuthUser {
@@ -104,6 +120,38 @@ export interface CreateSpaceResponse {
   createdAt: string;
   thumbnailColor: string | null;
   thumbnailImage: string | null;
+}
+
+/** Request body for `PUT /spaces/{id}/thumbnail-position`. */
+export interface SaveThumbnailPositionRequestDto {
+  position: string;
+  gradient: string;
+}
+
+/** Response after updating a space thumbnail. */
+export interface UpdateSpaceThumbnailResponseDto {
+  thumbnailImageUrl: string | null;
+  thumbnailColor: string | null;
+}
+
+/** Request body for creating a custom role (`POST /spaces/{id}/roles`). */
+export interface CreateRoleRequestDto {
+  name: string;
+  permissions: string[];
+  color?: string | null;
+}
+
+/** Request body for forwarding a message (`POST .../messages/{id}/forward`). */
+export interface ForwardMessageRequestDto {
+  targetChannelId: string;
+}
+
+/** Lightweight space info resolved from an invite code (`GET /spaces/invites/codes/{code}`). */
+export interface InviteCodeSpaceInfo {
+  id: string;
+  name: string;
+  description?: string | null;
+  category?: string | null;
 }
 
 export interface FileItem {
